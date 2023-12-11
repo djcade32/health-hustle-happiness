@@ -1,9 +1,8 @@
 export type Article = {
   title: string;
   image: string;
-  date: string;
+  date: number;
   link: string;
   logo: string;
-  readTime: number;
   type: string;
 };

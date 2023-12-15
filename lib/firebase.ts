@@ -34,17 +34,17 @@ export const getFirebaseDB = (): Firestore | undefined => {
     console.log("FIREBASE_API_KEY is not defined in .env");
     return;
   }
-  if (isConnected) {
-    console.log("=> using existing database connection");
-    return;
-  }
+  // if (isConnected) {
+  //   console.log("=> using existing database connection");
+  //   return;
+  // }
 
   try {
     // Initialize Firebase
 
     const db = getFirestore(app);
 
-    isConnected = true;
+    // isConnected = true;
     console.log("INFO: Firebase Connected");
     return db;
   } catch (error) {

@@ -10,11 +10,12 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#0d0d0d",
-          light: "#595959",
+          DEFAULT: "#021525",
+          light: "#172C46",
         },
-        gray: "#737373",
+        gray: "#96A7BF",
         white: "#f2f2f2",
+        accent: "#0742A0",
       },
       maxWidth: {
         "10xl": "1440px",

@@ -1,21 +1,34 @@
 import ArticleCard from "@/components/ArticleCard";
 import { getArticles, scrapeAndStoreArticles } from "@/lib/actions";
-import { Article } from "@/types";
-import { get } from "http";
-
-const article: Article = {
-  title: "How to Shop at Aldi and the Best Ways To Save",
-  link: "https://www.moneytalksnews.com/slideshows/how-to-shop-at-aldi-and-the-best-ways-to-save/",
-  date: Date.now(),
-  image:
-    "https://www.moneytalksnews.com/workers/images/width=1460/wp-content/uploads/2021/12/24211028/shutterstock_1590343318-scaled.jpg?s=d7037249cd3464a63a679077e980ebbf8f52c1caff961b05ff807b776f31910a",
-  logo: "/../public/assets/websiteLogos/msn.jpg",
-  type: "Personal Finance",
-};
+import {
+  scrapeNerdWallet,
+  scrapePennyHoarder,
+  scrapeEverydayHealth,
+  scrapeAthletechNews,
+  scrapeFitAndWell,
+  scrapeHealthline,
+  scrapeNewsMedical,
+  scrapeMentalHealthFirstAid,
+} from "@/lib/scrapers";
 
 export default async function Home() {
+  // const articles = await scrapeNerdWallet();
+  // console.log(articles);
+  // await scrapeAndStoreArticles();
   const articles = await getArticles();
-  console.log("length: ", articles?.length);
+
+  // if (!articles) {
+  //   return (
+  //     <section className="flex flex-1 max-w-fit">
+  //       <div className="flex flex-wrap gap-8 ">
+  //         <div className="flex flex-col items-center justify-center w-full h-full p-8 text-center bg-gray-100 rounded-lg">
+  //           <h1 className="text-4xl font-bold text-gray-800">Loading...</h1>
+  //         </div>
+  //       </div>
+  //     </section>
+  //   );
+  // }
+
   return (
     <section className="flex flex-1 max-w-fit">
       <div className="flex flex-wrap gap-8 ">

@@ -5,4 +5,5 @@ export type Article = {
   link: string;
   logo: string;
   type: string;
+  websiteName: string;
 };

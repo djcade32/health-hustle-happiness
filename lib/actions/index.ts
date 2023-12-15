@@ -1,15 +1,26 @@
 import { Article } from "@/types";
 import { getFirebaseDB } from "../firebase";
-import { scrapeYahooFinance } from "../scraper";
+import {
+  scrapeAthletechNews,
+  scrapeEverydayHealth,
+  scrapeFitAndWell,
+  scrapeHealthline,
+  scrapeMentalHealthFirstAid,
+  scrapeNerdWallet,
+  scrapeNewsMedical,
+  scrapePennyHoarder,
+  scrapeYahooFinance,
+} from "../scrapers";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 
 export async function scrapeAndStoreArticles() {
   try {
+    console.time("scrapeTimer");
     const db = getFirebaseDB();
     if (!db) return;
 
-    const scrapedArticles = await scrapeYahooFinance();
+    const scrapedArticles = await scrapeMentalHealthFirstAid();
 
     if (!scrapedArticles) return;
 
@@ -31,8 +42,11 @@ export async function scrapeAndStoreArticles() {
 
     revalidatePath("/");
     // revalidatePath(`/products/${newProduct._id}`);
+    console.log("INFO: Scraped and stored articles");
   } catch (error: any) {
     throw new Error(`Failed to scrape and store articles: ${error.message}`);
+  } finally {
+    console.timeEnd("scrapeTimer");
   }
 }
 

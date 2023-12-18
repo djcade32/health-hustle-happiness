@@ -1,4 +1,4 @@
-export function formatArticleCardDate(timeInMilliseconds: number) {
+export function formatArticleCardDate(timeInMilliseconds: number): string {
   const inputDate = new Date(timeInMilliseconds);
 
   const fullDate = inputDate.toLocaleDateString(undefined, {
@@ -9,4 +9,12 @@ export function formatArticleCardDate(timeInMilliseconds: number) {
   if (new Date().getFullYear() === inputDate.getFullYear()) {
     return fullDate.slice(0, fullDate.length - 6);
   }
+  return fullDate;
+}
+
+export function convertSnakeCaseToTitleCase(input: string): string {
+  return input
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }

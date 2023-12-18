@@ -1,11 +1,9 @@
 import Image from "next/image";
 import React from "react";
-// import companyLogo from "../public/assets/websiteLogos/msn.jpg";
 import Link from "next/link";
 import { Article } from "@/types";
-import { formatArticleCardDate } from "@/utils";
+import { convertSnakeCaseToTitleCase, formatArticleCardDate } from "@/utils";
 import { Tooltip } from "antd";
-import { url } from "inspector";
 
 interface Props {
   article: Article;
@@ -43,20 +41,12 @@ const ArticleCard = ({ article }: Props) => {
       <div>
         <p className="mb-1 font-thin small-text mx-3 text-gray">
           {`${formatArticleCardDate(article.date)} • `}
-          <span>{article.type}</span>
+          <span>{convertSnakeCaseToTitleCase(article.type)}</span>
         </p>
         <div
           className="h-[175px] overflow-hidden w-full bg-cover bg-center rounded-xl"
           style={{ backgroundImage: `url(${article.image})` }}
         />
-        {/* <Image
-            src={article.image}
-            alt={article.title}
-            width={350}
-            height={175}
-            className=" rounded-xl"
-          /> */}
-        {/* </div> */}
       </div>
     </Link>
   );

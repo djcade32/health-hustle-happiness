@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import AppContextProvider from "@/context/AppContext";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
@@ -15,14 +16,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={poppins.className}>
-        <Navbar />
-        <main className="flex flex-row ">
-          <Sidebar />
-          <main className="flex flex-1 ml-[350px] mr-[100px] pt-[50px]">{children}</main>
-        </main>
-      </body>
-    </html>
+    <AppContextProvider>
+      <html lang="en">
+        <body className={poppins.className}>
+          <Navbar />
+          <main className="flex flex-row ">
+            <Sidebar />
+            <main className="flex flex-1 ml-[350px] mr-[100px] pt-[50px]">{children}</main>
+          </main>
+        </body>
+      </html>
+    </AppContextProvider>
   );
 }

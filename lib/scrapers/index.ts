@@ -3,8 +3,8 @@
 import { Article } from "@/types";
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { title } from "process";
 import puppeteer from "puppeteer";
+import { v4 as uuidv4 } from "uuid";
 
 // BrightData proxy configuration
 const username = String(process.env.BRIGHT_DATA_USERNAME);
@@ -43,6 +43,7 @@ export async function scrapeYahooFinance(): Promise<Article[] | undefined> {
       if (!title || !image || !date || !link || !logo || !type) return;
 
       const data: Article = {
+        id: uuidv4(),
         title,
         image,
         date,
@@ -50,6 +51,7 @@ export async function scrapeYahooFinance(): Promise<Article[] | undefined> {
         logo,
         type,
         websiteName: "Yahoo",
+        ranking: 0,
       };
 
       scrapedArticles.push(data);
@@ -83,6 +85,7 @@ export async function scrapeNerdWallet() {
       if (!title || !image || !date || !link || !logo || !type) return;
 
       const data: Article = {
+        id: uuidv4(),
         title,
         image,
         date,
@@ -90,6 +93,7 @@ export async function scrapeNerdWallet() {
         logo,
         type,
         websiteName: "NerdWallet",
+        ranking: 0,
       };
       scrapedArticles.push(data);
     });
@@ -137,6 +141,7 @@ export async function scrapePennyHoarder() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -144,6 +149,7 @@ export async function scrapePennyHoarder() {
           logo,
           type,
           websiteName: "Penny Hoarder",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -186,6 +192,7 @@ export async function scrapeEverydayHealth() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -193,6 +200,7 @@ export async function scrapeEverydayHealth() {
           logo,
           type,
           websiteName: "Everyday Health",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -234,6 +242,7 @@ export async function scrapeAthletechNews() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -241,6 +250,7 @@ export async function scrapeAthletechNews() {
           logo,
           type,
           websiteName: "Athletech News",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -280,6 +290,7 @@ export async function scrapeFitAndWell() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -287,6 +298,7 @@ export async function scrapeFitAndWell() {
           logo,
           type,
           websiteName: "Fit and Well",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -327,6 +339,7 @@ export async function scrapeHealthline() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -334,6 +347,7 @@ export async function scrapeHealthline() {
           logo,
           type,
           websiteName: "Healthline",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -378,6 +392,7 @@ export async function scrapeNewsMedical() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -385,6 +400,7 @@ export async function scrapeNewsMedical() {
           logo,
           type,
           websiteName: "News Medical Life Science",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -409,6 +425,7 @@ export async function scrapeNewsMedical() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -416,6 +433,7 @@ export async function scrapeNewsMedical() {
           logo,
           type,
           websiteName: "News Medical Life Science",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });
@@ -460,6 +478,7 @@ export async function scrapeMentalHealthFirstAid() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
+          id: uuidv4(),
           title,
           image,
           date,
@@ -467,6 +486,7 @@ export async function scrapeMentalHealthFirstAid() {
           logo,
           type,
           websiteName: "Mental Health First Aid",
+          ranking: 0,
         };
         scrapedArticles.push(data);
       });

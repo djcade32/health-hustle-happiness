@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { Firestore, getFirestore } from "firebase/firestore";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -10,7 +10,7 @@ import firebase from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "health-hustle-happiness.firebaseapp.com",
   projectId: "health-hustle-happiness",
   storageBucket: "health-hustle-happiness.appspot.com",
@@ -30,8 +30,8 @@ export const analytics = () => {
 };
 
 export const getFirebaseDB = (): Firestore | undefined => {
-  if (!process.env.FIREBASE_API_KEY) {
-    console.log("FIREBASE_API_KEY is not defined in .env");
+  if (!process.env.FIREBASE_API_KEY && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+    console.log("FIREBASE_API_KEY and NEXT_PUBLIC_FIREBASE_API_KEY are not defined in .env");
     return;
   }
   // if (isConnected) {

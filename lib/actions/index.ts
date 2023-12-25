@@ -17,7 +17,6 @@ import {
   where,
 } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
-import { uuid } from "uuidv4";
 import { filters } from "@/enums";
 
 export async function scrapeAndStoreArticles() {
@@ -60,7 +59,6 @@ const buildQueryConditions = (
   conditions: QueryConditionFilterType[] | undefined
 ): QueryFieldFilterConstraint[] => {
   const queryConditions: QueryFieldFilterConstraint[] = [];
-
   if (conditions && conditions.length > 0) {
     conditions.forEach((condition) => {
       if (condition.field === "type" && condition.value === filters.ALL) {
@@ -133,16 +131,16 @@ export async function getArticles(
 }
 
 export async function updateArticles() {
-  const websiteName = "Athletech News";
+  const type = filters.PERSONAL_FINANCE;
   try {
     const db = getFirebaseDB();
     if (!db) return;
     const querySnapshot = await getDocs(collection(db, "articles"));
     querySnapshot.forEach(async (doc) => {
-      if (doc.data().websiteName === websiteName) {
+      if (doc.data().type === "Personal Finance") {
         await updateDoc(doc.ref, {
           ...doc.data(),
-          id: uuid(),
+          type: type,
         });
         return;
       }

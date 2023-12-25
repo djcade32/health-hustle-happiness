@@ -1,5 +1,6 @@
 "use server";
 
+import { filters } from "@/enums";
 import { Article } from "@/types";
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -39,7 +40,7 @@ export async function scrapeYahooFinance(): Promise<Article[] | undefined> {
       const date = Date.now();
       const link = $(article).find("a").attr("href");
       const logo = "/assets/websiteLogos/yahoo.png";
-      const type = "Personal Finance";
+      const type = filters.PERSONAL_FINANCE;
       if (!title || !image || !date || !link || !logo || !type) return;
 
       const data: Article = {
@@ -80,7 +81,7 @@ export async function scrapeNerdWallet() {
       const date = Date.now();
       const link = $(article).find("a").attr("href");
       const logo = "/assets/websiteLogos/nerdwallet.png";
-      const type = "Personal Finance";
+      const type = filters.PERSONAL_FINANCE;
 
       if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -110,9 +111,9 @@ export async function scrapePennyHoarder() {
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     await page.goto("https://www.thepennyhoarder.com/save-money/", { waitUntil: "load" });
-    const uuid = uuidv4();
+    const id = uuidv4();
 
-    const grabArticles = await page.evaluate((uuid) => {
+    const grabArticles = await page.evaluate((id) => {
       function getImageUrlFromDataSrcSet(imageString: string): string {
         // Replace unnecessary characters and split the string into an array
         const imageUrlArray = imageString.replace(/['"]/g, "").split(/,| /);
@@ -137,11 +138,11 @@ export async function scrapePennyHoarder() {
         let date = Date.now();
         let link = article.querySelector("a")?.getAttribute("href");
         let logo = "/assets/websiteLogos/pennyhoarder.png";
-        let type = "Personal Finance";
+        let type = filters.PERSONAL_FINANCE;
 
         if (!title || !image || !date || !link || !logo || !type) return;
         const data: Article = {
-          id: uuid,
+          id,
           title,
           image,
           date,
@@ -154,7 +155,7 @@ export async function scrapePennyHoarder() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping penny hoarder");
     await browser.close();
     return grabArticles;
@@ -189,7 +190,7 @@ export async function scrapeEverydayHealth() {
         let date = Date.now();
         let link = article.querySelector("a")?.getAttribute("href");
         let logo = "https://images.everydayhealth.com/images/site-images/favicon.png";
-        let type = "Physical Fitness";
+        let type = filters.PHYSICAL_FITNESS;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -241,7 +242,7 @@ export async function scrapeAthletechNews() {
         let link = article.querySelector("a")?.getAttribute("href");
         let logo =
           "https://athletechnews.com/wp-content/uploads/2021/08/ATHLETECH-FAVICON-KNOCKOUT-LRG-48x48.png";
-        let type = "Physical Fitness";
+        let type = filters;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -291,7 +292,7 @@ export async function scrapeFitAndWell() {
         let date = Date.now();
         let link = article.querySelector("a")?.getAttribute("href");
         let logo = "/assets/websiteLogos/fitandwell.jpeg";
-        let type = "Physical Fitness";
+        let type = filters;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -342,7 +343,7 @@ export async function scrapeHealthline() {
         let link = article.querySelector("a")?.getAttribute("href");
         let logo =
           "https://images-prod.healthline.com/hlcmsresource/images/frontend-static/favicon/hl-logo-logomark-circle-black.ico";
-        let type = "Mental Health";
+        let type = filters.MENTAL_HEALTH;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -397,7 +398,7 @@ export async function scrapeNewsMedical() {
         let date = Date.now();
         let link = article.querySelector("a")?.getAttribute("href");
         let logo = "https://www.news-medical.net/favicon-32x32.png";
-        let type = "Mental Health";
+        let type = filters;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 
@@ -485,7 +486,7 @@ export async function scrapeMentalHealthFirstAid() {
         let link = article.querySelector("a")?.getAttribute("href");
         let logo =
           "https://www.mentalhealthfirstaid.org/wp-content/themes/mentalhealthfirstaid-2014/images/favicon.png          ";
-        let type = "Mental Health";
+        let type = filters;
 
         if (!title || !image || !date || !link || !logo || !type) return;
 

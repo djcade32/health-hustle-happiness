@@ -34,7 +34,6 @@ const Feed = () => {
       try {
         // Start loading
         setLoadingInitialArticles(true);
-
         const articles = (await getArticles(globalFilters.tabFilter)) as GetArticlesType;
 
         setArticles(articles.articles);

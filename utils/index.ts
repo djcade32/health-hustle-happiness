@@ -18,3 +18,10 @@ export function convertSnakeCaseToTitleCase(input: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export function getFirstLetters(inputString: string) {
+  return inputString
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("");
+}

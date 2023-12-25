@@ -24,7 +24,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   const onSubmit = (values: any) => {
     console.log("Received values of form: ", values);
     if (isSignupShowing) {
-      createAccount(values.email, values.password, values.fullName);
+      createAccount(values.email.trim(), values.password, values.fullName.trim());
     }
   };
 

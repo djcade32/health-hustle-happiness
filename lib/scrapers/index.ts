@@ -76,7 +76,7 @@ export async function scrapeNerdWallet() {
 
     articles.map((_, article) => {
       const title = $(article).find("span._2GdPcq._24b0kK.DFVVwC._1My7YX").text().trim();
-      const image = "/assets/images/nerdwalletArticlePlaceholder.png";
+      const image = "/assets/images/nerdwalletArticlePlaceholder.jpg";
       const date = Date.now();
       const link = $(article).find("a").attr("href");
       const logo = "/assets/websiteLogos/nerdwallet.png";
@@ -110,8 +110,9 @@ export async function scrapePennyHoarder() {
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     await page.goto("https://www.thepennyhoarder.com/save-money/", { waitUntil: "load" });
+    const uuid = uuidv4();
 
-    const grabArticles = await page.evaluate(() => {
+    const grabArticles = await page.evaluate((uuid) => {
       function getImageUrlFromDataSrcSet(imageString: string): string {
         // Replace unnecessary characters and split the string into an array
         const imageUrlArray = imageString.replace(/['"]/g, "").split(/,| /);
@@ -139,9 +140,8 @@ export async function scrapePennyHoarder() {
         let type = "Personal Finance";
 
         if (!title || !image || !date || !link || !logo || !type) return;
-
         const data: Article = {
-          id: uuidv4(),
+          id: uuid,
           title,
           image,
           date,
@@ -173,7 +173,9 @@ export async function scrapeEverydayHealth() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -192,7 +194,7 @@ export async function scrapeEverydayHealth() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -205,7 +207,7 @@ export async function scrapeEverydayHealth() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping Everyday Health");
     await browser.close();
     return grabArticles;
@@ -224,7 +226,9 @@ export async function scrapeAthletechNews() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -242,7 +246,7 @@ export async function scrapeAthletechNews() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -255,7 +259,7 @@ export async function scrapeAthletechNews() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping Athletech News");
     await browser.close();
     return grabArticles;
@@ -273,7 +277,9 @@ export async function scrapeFitAndWell() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -290,7 +296,7 @@ export async function scrapeFitAndWell() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -303,7 +309,7 @@ export async function scrapeFitAndWell() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping Fit and Well");
     await browser.close();
     return grabArticles;
@@ -321,7 +327,9 @@ export async function scrapeHealthline() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -339,7 +347,7 @@ export async function scrapeHealthline() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -352,7 +360,7 @@ export async function scrapeHealthline() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping Healthline");
     await browser.close();
     return grabArticles;
@@ -370,7 +378,9 @@ export async function scrapeNewsMedical() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -392,7 +402,7 @@ export async function scrapeNewsMedical() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -438,7 +448,7 @@ export async function scrapeNewsMedical() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping News Medical");
     await browser.close();
     return grabArticles;
@@ -456,7 +466,9 @@ export async function scrapeMentalHealthFirstAid() {
       waitUntil: "domcontentloaded",
     });
 
-    const grabArticles = await page.evaluate(() => {
+    const id = uuidv4();
+
+    const grabArticles = await page.evaluate((id) => {
       let scrapedArticles: Article[] = [];
 
       //Start scraping
@@ -478,7 +490,7 @@ export async function scrapeMentalHealthFirstAid() {
         if (!title || !image || !date || !link || !logo || !type) return;
 
         const data: Article = {
-          id: uuidv4(),
+          id,
           title,
           image,
           date,
@@ -491,7 +503,7 @@ export async function scrapeMentalHealthFirstAid() {
         scrapedArticles.push(data);
       });
       return scrapedArticles;
-    });
+    }, id);
     console.log("INFO: Done scraping Mental Health First Aid");
     await browser.close();
     return grabArticles;

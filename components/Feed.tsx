@@ -20,7 +20,7 @@ const Feed = () => {
   const [loadingMoreArticles, setLoadingMoreArticles] = useState(false);
   const [nextPage, setNextPage] = useState(1);
 
-  const BOTTOM_OFFSET = 850;
+  const BOTTOM_OFFSET = 0.7;
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -62,8 +62,10 @@ const Feed = () => {
       return;
     const fetchArticles = async () => {
       try {
-        setLoadingMoreArticles(true);
+        // Check to see if there are more articles to fetch
+        if (!lastArticle) return;
 
+        setLoadingMoreArticles(true);
         const articles = (await getArticles(
           globalFilters.tabFilter,
           lastArticle
@@ -73,7 +75,7 @@ const Feed = () => {
           return;
         }
         setArticles((prev) => [...prev, ...articles.articles]);
-        setLastArticle(articles.lastArticle);
+        setLastArticle(articles.lastArticle ?? null);
         setLoadingMoreArticles(false);
       } catch (error) {
         console.log("ERROR: There was a problem fetching more articles ");
@@ -90,7 +92,7 @@ const Feed = () => {
   const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
-      document.documentElement.scrollHeight - BOTTOM_OFFSET
+      document.documentElement.scrollHeight * BOTTOM_OFFSET
     ) {
       setNextPage((prev) => prev + 1);
     }

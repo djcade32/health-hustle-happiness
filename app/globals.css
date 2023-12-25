@@ -28,6 +28,18 @@
   .small-text {
     @apply text-[12px];
   }
+  
+  .debug-1 {
+    @apply border-2 border-red-500;
+  }
+
+  .debug-2 {
+    @apply border-2 border-green-500;
+  }
+
+  .debug-3 {
+    @apply border-2 border-blue-500;
+  } 
 }
 
 

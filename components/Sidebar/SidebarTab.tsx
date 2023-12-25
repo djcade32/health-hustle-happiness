@@ -16,7 +16,7 @@ const SidebarTab = ({ title, icon }: Props) => {
       onClick={() => {
         setSelectedTab(title);
       }}
-      className={`flex items-center gap-2 cursor-pointer pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white ${
+      className={`flex items-center gap-2 cursor-pointer pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white transition-colors duration-300 ${
         selectedTab === title ? "bg-primary-light text-white" : ""
       }`}
     >

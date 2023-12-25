@@ -5,6 +5,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import AppContextProvider from "@/context/AppContext";
+import StyledComponentsRegistry from "@/lib/AntdRegistry";
+import theme from "@/theme/themeConfig";
+import { ConfigProvider } from "antd";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
@@ -18,13 +21,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <AppContextProvider>
       <html lang="en">
-        <body className={poppins.className}>
-          <Navbar />
-          <main className="flex flex-row ">
-            <Sidebar />
-            <main className="flex flex-1 ml-[350px] mr-[100px] pt-[50px]">{children}</main>
-          </main>
-        </body>
+        <StyledComponentsRegistry>
+          <ConfigProvider theme={theme}>
+            <body className={poppins.className}>{children}</body>
+          </ConfigProvider>
+        </StyledComponentsRegistry>
       </html>
     </AppContextProvider>
   );

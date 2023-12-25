@@ -12,6 +12,12 @@ export type Article = {
   ranking: number;
 };
 
+export type UserType = {
+  id: string;
+  email: string;
+  fullName: string;
+};
+
 export type FilterType = "all" | "mental_health" | "physical_fitness" | "personal_finance";
 
 export type FilterTypes = {

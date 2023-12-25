@@ -14,7 +14,7 @@ const ArticleCard = ({ article }: Props) => {
     <Link
       href={article.link}
       target="_blank"
-      className="flex flex-col justify-between bg-primary-light min-h-[380px] rounded-xl w-[300px] pt-5 pb-2 px-2 border-[1px] border-gray cursor-pointer hover:border-[#D3E3FD]"
+      className="flex flex-col justify-between bg-primary-light min-h-[380px] rounded-xl w-[300px] pt-5 pb-2 px-2 border-[1px] border-gray cursor-pointer hover:border-[#D3E3FD] transition-colors duration-300"
     >
       <div className="mx-3">
         <div>

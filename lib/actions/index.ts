@@ -133,17 +133,19 @@ export async function getArticles(
 }
 
 export async function updateArticles() {
-  const link = "https://www.everydayhealth.com";
+  const websiteName = "Athletech News";
   try {
     const db = getFirebaseDB();
     if (!db) return;
     const querySnapshot = await getDocs(collection(db, "articles"));
     querySnapshot.forEach(async (doc) => {
-      // if (doc.data().link.includes(link)) {
-      //   await updateDoc(doc.ref, { ...doc.data(), websiteName: "Everyday Health" });
-      //   return;
-      // }
-      await updateDoc(doc.ref, { ...doc.data(), id: uuid(), ranking: 0 });
+      if (doc.data().websiteName === websiteName) {
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          id: uuid(),
+        });
+        return;
+      }
     });
     console.log("INFO: Updated article");
   } catch (error: any) {

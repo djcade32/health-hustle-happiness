@@ -4,9 +4,10 @@ import { MdLockOutline, MdOutlineEmail } from "react-icons/md";
 
 interface Props {
   onSubmit: (values: any) => void;
+  setIsForgotPasswordShowing: (isForgotPasswordShowing: boolean) => void;
 }
 
-const LoginForms = ({ onSubmit }: Props) => {
+const LoginForms = ({ onSubmit, setIsForgotPasswordShowing }: Props) => {
   return (
     <>
       <Form.Item name="email" rules={[{ required: true, message: "Please input your Email!" }]}>
@@ -26,9 +27,12 @@ const LoginForms = ({ onSubmit }: Props) => {
       </Form.Item>
       <Form.Item>
         <div className="flex justify-between items-center">
-          <a href="" className="underline text-gray hover:text-primary">
+          <p
+            className=" cursor-pointer underline text-gray hover:text-primary hover:no-underline"
+            onClick={() => setIsForgotPasswordShowing(true)}
+          >
             Forgot password?
-          </a>
+          </p>
           <Button
             htmlType="submit"
             className="w-[40%] bg-accent hover:opacity-75 transition-opacity duration-300"

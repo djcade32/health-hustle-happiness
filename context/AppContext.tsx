@@ -7,6 +7,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -27,6 +28,7 @@ type AppContextType = {
   signUserIn: (email: string, password: string) => void;
   createUserWithGoogle: () => void;
   signInWithGoogle: () => void;
+  sendPasswordReset: (email: string) => Promise<void>;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -187,6 +189,18 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  const sendPasswordReset = async (email: string): Promise<void> => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to send password reset email."
+      );
+    try {
+      return await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.log("ERROR: There was a problem sending password reset email: ", error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -201,6 +215,7 @@ export const AppContextProvider = ({ children }: any) => {
         signUserIn,
         createUserWithGoogle,
         signInWithGoogle,
+        sendPasswordReset,
       }}
     >
       {children}

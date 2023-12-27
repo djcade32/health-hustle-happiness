@@ -10,6 +10,7 @@ interface Props {
 const SignupForms = ({ onSubmit }: Props) => {
   return (
     <>
+      <input autoComplete="false" name="hidden" type="text" style={{ display: "none" }}></input>
       <Form.Item
         name="fullName"
         rules={[{ required: true, message: "Please input your Full Name!" }]}
@@ -23,6 +24,7 @@ const SignupForms = ({ onSubmit }: Props) => {
           prefix={<MdOutlineEmail />}
           placeholder="Email"
           className="mt-2"
+          autoComplete="false"
         />
       </Form.Item>
       <Form.Item
@@ -35,6 +37,7 @@ const SignupForms = ({ onSubmit }: Props) => {
           placeholder="Password"
           prefix={<MdLockOutline />}
           onPressEnter={onSubmit}
+          autoComplete="false"
         />
       </Form.Item>
       <Form.Item>

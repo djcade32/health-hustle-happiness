@@ -1,7 +1,7 @@
 "use client";
 
 import { Form, Modal } from "antd";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
@@ -13,23 +13,39 @@ interface Props {
 }
 
 const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
-  const { createAccount } = useAppContext();
+  const { createAccount, signUserIn, createUserWithGoogle, signInWithGoogle } = useAppContext();
   const [isSignupShowing, setIsSignupShowing] = useState(false);
+  const [form] = Form.useForm();
 
   const handleModalClose = () => {
     setIsOpen(false);
     setIsSignupShowing(false);
+    form.resetFields();
   };
 
   const onSubmit = (values: any) => {
-    console.log("Received values of form: ", values);
     if (isSignupShowing) {
       createAccount(values.email.trim(), values.password, values.fullName.trim());
+    } else {
+      signUserIn(values.email.trim(), values.password);
     }
+    form.resetFields();
   };
 
   const getTitle = () => {
     return !isSignupShowing ? "Welcome back!" : "Create an account";
+  };
+
+  const handleFormChange = () => {
+    setIsSignupShowing((prev) => !prev);
+  };
+
+  const handleGoogleButtonClick = () => {
+    if (isSignupShowing) {
+      createUserWithGoogle();
+    } else {
+      signInWithGoogle();
+    }
   };
 
   return (
@@ -43,7 +59,10 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
       footer={null}
       maskClosable={false}
     >
-      <div className="border-[1px] border-[#BFBFBF] hover:border-accent text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2">
+      <div
+        onClick={handleGoogleButtonClick}
+        className="border-[1px] border-[#BFBFBF] hover:border-accent text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
+      >
         <FcGoogle size={25} className="mr-2" />
         <p>Google</p>
       </div>
@@ -52,7 +71,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
         <p>or</p>
         <div className="bg-[#BFBFBF] w-full h-[1px]" />
       </div>
-      <Form name="normal_login" onFinish={onSubmit}>
+      <Form form={form} autoComplete="off" name="normal_login" onFinish={onSubmit}>
         {!isSignupShowing ? (
           <LoginForms onSubmit={onSubmit} />
         ) : (
@@ -64,10 +83,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
         <p className="mr-2">
           {!isSignupShowing ? "Don't have an account?" : "Already have an account?"}
         </p>
-        <p
-          className="text-accent hover:text-primary cursor-pointer"
-          onClick={() => setIsSignupShowing((prev) => !prev)}
-        >
+        <p className="text-accent hover:text-primary cursor-pointer" onClick={handleFormChange}>
           {!isSignupShowing ? "Sign up" : "Log in"}
         </p>
       </div>

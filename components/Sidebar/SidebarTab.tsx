@@ -6,19 +6,21 @@ import React, { useEffect } from "react";
 interface Props {
   title: string;
   icon: React.ReactNode;
+  onClick: () => void;
+  showSelected?: boolean;
 }
 
-const SidebarTab = ({ title, icon }: Props) => {
-  const { selectedTab, setSelectedTab } = useAppContext();
+const SidebarTab = ({ title, icon, onClick, showSelected = true }: Props) => {
+  const { selectedTab } = useAppContext();
+
+  const checkIsSelected = () => {
+    return selectedTab === title && showSelected ? "bg-primary-light text-white" : "";
+  };
 
   return (
     <li
-      onClick={() => {
-        setSelectedTab(title);
-      }}
-      className={`flex items-center gap-2 cursor-pointer pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white transition-colors duration-300 ${
-        selectedTab === title ? "bg-primary-light text-white" : ""
-      }`}
+      onClick={onClick}
+      className={`flex items-center gap-2 cursor-pointer pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white transition-colors duration-300 ${checkIsSelected()}`}
     >
       <div>{icon}</div>
       <p>{title}</p>

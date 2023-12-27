@@ -3,9 +3,17 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { filters, tabs } from "@/enums";
 import { GlobalFiltersType, UserType } from "@/types";
-import { createUserWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
+import { set } from "firebase/database";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -15,6 +23,10 @@ type AppContextType = {
   toggleDarkMode(): void;
   user: UserType | null;
   createAccount: (email: string, password: string, fullName: string) => void;
+  signUserOut: () => void;
+  signUserIn: (email: string, password: string) => void;
+  createUserWithGoogle: () => void;
+  signInWithGoogle: () => void;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -123,6 +135,58 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  const signUserOut = () => {
+    if (!auth) return console.log("ERROR: There was a problem getting Firebase auth to sign out.");
+    setUser(null);
+    signOut(auth);
+  };
+
+  const signUserIn = async (email: string, password: string) => {
+    if (!auth) return console.log("ERROR: There was a problem getting Firebase auth to sign in.");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.log("ERROR: There was a problem signing user in: ", error);
+    }
+  };
+
+  // Create user with Google authentication
+  const createUserWithGoogle = async () => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to create new user with google auth."
+      );
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+
+      const { uid, email, displayName } = userCredential.user;
+      const user: UserType = {
+        id: uid,
+        email: email ?? "",
+        fullName: displayName ?? "",
+      };
+
+      setUser(user);
+      addUserToDB(user);
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to sign in with Google."
+      );
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -133,6 +197,10 @@ export const AppContextProvider = ({ children }: any) => {
         setSelectedTab,
         user,
         createAccount,
+        signUserOut,
+        signUserIn,
+        createUserWithGoogle,
+        signInWithGoogle,
       }}
     >
       {children}

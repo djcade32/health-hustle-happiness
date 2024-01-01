@@ -13,11 +13,22 @@ const SignupForms = ({ onSubmit }: Props) => {
       <input autoComplete="false" name="hidden" type="text" style={{ display: "none" }}></input>
       <Form.Item
         name="fullName"
-        rules={[{ required: true, message: "Please input your Full Name!" }]}
+        rules={[
+          {
+            required: true,
+            message: "Please input your Full Name!",
+            whitespace: true,
+          },
+        ]}
       >
         <Input size="large" type="text" prefix={<FaRegUser />} placeholder="Full name" />
       </Form.Item>
-      <Form.Item name="email" rules={[{ required: true, message: "Please input your Email!" }]}>
+      <Form.Item
+        name="email"
+        rules={[
+          { required: true, message: "Please input your Email!", whitespace: true, type: "email" },
+        ]}
+      >
         <Input
           size="large"
           type="email"
@@ -29,7 +40,14 @@ const SignupForms = ({ onSubmit }: Props) => {
       </Form.Item>
       <Form.Item
         name="password"
-        rules={[{ required: true, message: "Please input your Password!" }]}
+        rules={[
+          {
+            required: true,
+            message: "Please input your Password!",
+            min: 6,
+            whitespace: true,
+          },
+        ]}
       >
         <Input.Password
           className="mt-2"

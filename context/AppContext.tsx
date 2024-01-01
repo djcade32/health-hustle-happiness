@@ -5,16 +5,18 @@ import { filters, tabs } from "@/enums";
 import { GlobalFiltersType, UserType } from "@/types";
 import {
   GoogleAuthProvider,
+  User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
-import { set } from "firebase/database";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -23,18 +25,21 @@ type AppContextType = {
   isDarkMode: boolean;
   toggleDarkMode(): void;
   user: UserType | null;
-  createAccount: (email: string, password: string, fullName: string) => void;
+  createAccount: (email: string, password: string, fullName: string) => Promise<void>;
   signUserOut: () => void;
-  signUserIn: (email: string, password: string) => void;
+  signUserIn: (email: string, password: string) => Promise<string>;
   createUserWithGoogle: () => void;
   signInWithGoogle: () => void;
   sendPasswordReset: (email: string) => Promise<void>;
+  sendVerificationEmail: (currentUser: User) => Promise<void>;
+  auth: any;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
 const db = getFirebaseDB();
 
 export const AppContextProvider = ({ children }: any) => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserType | null>(null);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -47,6 +52,7 @@ export const AppContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
     onAuthStateChanged(auth, async () => {
+      if (!auth.currentUser?.emailVerified) return console.log("ERROR: User is not verified.");
       if (auth.currentUser) {
         const docRef = doc(db, `users/${auth.currentUser.uid}`);
         const docSnap = await getDoc(docRef);
@@ -54,6 +60,16 @@ export const AppContextProvider = ({ children }: any) => {
           const { id, email, fullName } = docSnap.data();
           const currentUser: UserType = { id, email, fullName };
           setUser(currentUser);
+        } else {
+          // Adding user to DB if they don't exist
+          const { uid, email, displayName } = auth.currentUser;
+          const user: UserType = {
+            id: uid,
+            email: email!,
+            fullName: displayName!,
+          };
+          addUserToDB(user);
+          setUser(user);
         }
 
         // onSnapshot(doc(db, `users/${auth.currentUser.uid}`), (doc) => {
@@ -70,6 +86,7 @@ export const AppContextProvider = ({ children }: any) => {
         // });
       }
     });
+    setLoading(false);
   }, []);
 
   // Set dark mode from local storage
@@ -106,18 +123,17 @@ export const AppContextProvider = ({ children }: any) => {
     localStorage.setItem("isDarkMode", !isDarkMode);
   };
 
-  const createAccount = async (email: string, password: string, fullName: string) => {
+  const createAccount = async (
+    email: string,
+    password: string,
+    fullName: string
+  ): Promise<void> => {
     console.log("Creating new account");
     if (!auth) return console.log("ERROR: There was a problem getting Firebase auth.");
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user: UserType = {
-        id: userCredential.user.uid,
-        email: email,
-        fullName: fullName,
-      };
-      setUser(user);
-      addUserToDB(user);
+      updateProfile(userCredential.user!, { displayName: fullName });
+      return await sendVerificationEmail(userCredential.user);
     } catch (error) {
       console.log("ERROR: There was a problem creating new account: ", error);
     }
@@ -143,12 +159,41 @@ export const AppContextProvider = ({ children }: any) => {
     signOut(auth);
   };
 
-  const signUserIn = async (email: string, password: string) => {
-    if (!auth) return console.log("ERROR: There was a problem getting Firebase auth to sign in.");
+  const signUserIn = async (email: string, password: string): Promise<string> => {
+    if (!auth || !db) {
+      console.log(
+        "ERROR: There was a problem getting Firebase auth to sign in or connecting to DB."
+      );
+      return new Promise((resolve, reject) =>
+        reject("There was a problem getting Firebase auth to sign user in or connecting to DB.")
+      );
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      console.log("ERROR: There was a problem signing user in: ", error);
+      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+      const { uid, displayName, emailVerified } = userCredentials.user;
+      if (!emailVerified) {
+        console.log("User is not verified.");
+        return new Promise((resolve, reject) => reject("User is not verified"));
+      }
+      const user: UserType = {
+        id: uid,
+        email,
+        fullName: displayName!,
+      };
+
+      setUser(user);
+      addUserToDB(user);
+      return new Promise((resolve) => resolve("User signed in"));
+    } catch (error: any) {
+      console.log("ERROR: There was a problem signing user in: ", error.code);
+      if (error.code === "auth/invalid-credential") {
+        return new Promise((resolve, reject) => reject("User not found"));
+      } else if (error.code === "auth/too-many-requests") {
+        return new Promise((resolve, reject) => reject("Too many requests"));
+      } else {
+        return new Promise((resolve, reject) => reject("There was a problem signing user in"));
+      }
     }
   };
 
@@ -201,9 +246,22 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  const sendVerificationEmail = async (currentUser: User) => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to send verification email."
+      );
+    try {
+      await sendEmailVerification(currentUser);
+    } catch (error) {
+      console.log("ERROR: There was a problem sending verification email: ", error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
+        auth,
         isDarkMode,
         toggleDarkMode,
         globalFilters,
@@ -216,9 +274,10 @@ export const AppContextProvider = ({ children }: any) => {
         createUserWithGoogle,
         signInWithGoogle,
         sendPasswordReset,
+        sendVerificationEmail,
       }}
     >
-      {children}
+      {!loading ? children : <></>}
     </AppContext.Provider>
   );
 };

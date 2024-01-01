@@ -1,6 +1,7 @@
 import Feed from "@/components/Feed";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import AppContextProvider from "@/context/AppContext";
 import { scrapeAndStoreArticles, updateArticles } from "@/lib/actions";
 
 export default function Home() {
@@ -8,7 +9,7 @@ export default function Home() {
   // scrapeAndStoreArticles();
 
   return (
-    <>
+    <AppContextProvider>
       <Navbar />
       <main className="flex flex-row ">
         <Sidebar />
@@ -16,6 +17,6 @@ export default function Home() {
           <Feed />
         </main>
       </main>
-    </>
+    </AppContextProvider>
   );
 }

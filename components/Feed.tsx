@@ -19,8 +19,8 @@ const Feed = () => {
   const [loadingInitialArticles, setLoadingInitialArticles] = useState(true);
   const [loadingMoreArticles, setLoadingMoreArticles] = useState(false);
   const [nextPage, setNextPage] = useState(1);
-
-  const BOTTOM_OFFSET = 0.7;
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -53,12 +53,8 @@ const Feed = () => {
 
   // Fetch more articles on bottom of page reached
   useEffect(() => {
-    if (
-      loadingInitialArticles ||
-      loadingMoreArticles ||
-      globalFilters.tabFilter !== currentGlobalFilters.tabFilter
-    )
-      return;
+    // if (loadingInitialArticles || loadingMoreArticles) return;
+    if (loadingMoreArticles || loadingInitialArticles) return;
     const fetchArticles = async () => {
       try {
         // Check to see if there are more articles to fetch
@@ -75,24 +71,36 @@ const Feed = () => {
         }
         setArticles((prev) => [...prev, ...articles.articles]);
         setLastArticle(articles.lastArticle ?? null);
-        setLoadingMoreArticles(false);
       } catch (error) {
         console.log("ERROR: There was a problem fetching more articles ");
         console.log(error);
       } finally {
         setLoadingMoreArticles(false);
+        console.log("finished fetching more articles");
       }
     };
 
     fetchArticles();
   }, [nextPage]);
 
+  useEffect(() => {
+    if (isAtBottom && !loadingMoreArticles) {
+      setNextPage((prev) => prev + 1);
+      setIsAtBottom(false);
+    }
+  }, [isAtBottom]);
+
   //Determine if reached bottom of page
   const handleScroll = () => {
+    // console.log("innerHeight: ", window.innerHeight);
+    // console.log("scrollTop: ", document.documentElement.scrollTop);
+    // console.log("scrollHeight: ", document.documentElement.scrollHeight);
+    // console.log("Bottom offset: ", BOTTOM_OFFSET);
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
-      document.documentElement.scrollHeight * BOTTOM_OFFSET
+      document.documentElement.scrollHeight - BOTTOM_OFFSET
     ) {
+      setIsAtBottom(true);
       setNextPage((prev) => prev + 1);
     }
   };

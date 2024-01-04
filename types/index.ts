@@ -1,3 +1,4 @@
+import { Unsubscribe } from "firebase/auth";
 import { DocumentData, QueryDocumentSnapshot, WhereFilterOp } from "firebase/firestore";
 
 export type Article = {
@@ -10,6 +11,8 @@ export type Article = {
   type: string;
   websiteName: string;
   ranking: number;
+  usersLikes: string[];
+  usersBookmarks: string[];
 };
 
 export type UserType = {
@@ -41,4 +44,5 @@ export type QueryConditionFilterType = {
 export type GetArticlesType = {
   articles: Article[];
   lastArticle: QueryDocumentSnapshot<DocumentData, DocumentData> | null;
+  unsubscribe?: Unsubscribe;
 };

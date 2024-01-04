@@ -8,6 +8,7 @@ import { GoInfinity } from "react-icons/go";
 import SidebarTab from "./SidebarTab";
 import { MdLogout } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
+import { PiBookmarkSimple } from "react-icons/pi";
 
 const iconProps = {
   size: 20,
@@ -40,6 +41,19 @@ const Sidebar = () => {
               }}
             />
           ))}
+        </ul>
+        <div className="pl-2 mb-1 mt-6">
+          <p className=" text-gray">Manage</p>
+        </div>
+        <ul className="flex flex-col ">
+          <SidebarTab
+            key={"bookmarks"}
+            title="Bookmarks"
+            icon={<PiBookmarkSimple {...iconProps} />}
+            onClick={() => {
+              setSelectedTab("Bookmarks");
+            }}
+          />
         </ul>
       </div>
       {user && (

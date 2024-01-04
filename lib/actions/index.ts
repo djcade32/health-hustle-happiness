@@ -137,13 +137,17 @@ export async function updateArticles() {
     if (!db) return;
     const querySnapshot = await getDocs(collection(db, "articles"));
     querySnapshot.forEach(async (doc) => {
-      if (doc.data().type === "Personal Finance") {
-        await updateDoc(doc.ref, {
-          ...doc.data(),
-          type: type,
-        });
-        return;
-      }
+      await updateDoc(doc.ref, {
+        ...doc.data(),
+        usersLikes: [],
+      });
+      // if (doc.data().type === "Personal Finance") {
+      //   await updateDoc(doc.ref, {
+      //     ...doc.data(),
+      //     type: type,
+      //   });
+      //   return;
+      // }
     });
     console.log("INFO: Updated article");
   } catch (error: any) {

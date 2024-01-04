@@ -7,7 +7,6 @@ import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
 import { useAppContext } from "@/context/AppContext";
 import ForgotPasswordForms from "./ForgotPasswordForms";
-import { set } from "firebase/database";
 
 interface Props {
   isOpen: boolean;

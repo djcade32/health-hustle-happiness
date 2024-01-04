@@ -15,7 +15,19 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
 
 type AppContextType = {
@@ -33,6 +45,10 @@ type AppContextType = {
   sendPasswordReset: (email: string) => Promise<void>;
   sendVerificationEmail: (currentUser: User) => Promise<void>;
   auth: any;
+  showOnboardingModal: boolean;
+  setShowOnboardingModal: (show: boolean) => void;
+  likeArticle: (articleId: string, action: string) => void;
+  bookmarkArticle: (articleId: string, action: string) => void;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -48,6 +64,7 @@ export const AppContextProvider = ({ children }: any) => {
     otherFilters: [],
   });
   const [selectedTab, setSelectedTab] = useState<string>("All");
+  const [showOnboardingModal, setShowOnboardingModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
@@ -71,19 +88,6 @@ export const AppContextProvider = ({ children }: any) => {
           addUserToDB(user);
           setUser(user);
         }
-
-        // onSnapshot(doc(db, `users/${auth.currentUser.uid}`), (doc) => {
-        //   const { lastLoginAt, focusedTime, numOfStickyNotes, consecutiveDays, achievements } =
-        //     doc.data();
-
-        //   setUserData({
-        //     lastLoginAt: timeStampToDateString(lastLoginAt),
-        //     focusedTime: durationInDHMS(focusedTime),
-        //     numOfStickyNotes: numOfStickyNotes,
-        //     consecutiveDays: consecutiveDays,
-        //     achievements: achievements,
-        //   });
-        // });
       }
     });
     setLoading(false);
@@ -99,23 +103,24 @@ export const AppContextProvider = ({ children }: any) => {
 
   // Update global filters when selected tab changes
   useEffect(() => {
-    switch (selectedTab) {
-      case tabs.ALL:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
-        break;
-      case tabs.PHYSICAL_FITNESS:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.PHYSICAL_FITNESS });
-        break;
-      case tabs.PERSONAL_FINANCE:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.PERSONAL_FINANCE });
-        break;
-      case tabs.MENTAL_HEALTH:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
-        break;
-      default:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
-        break;
-    }
+    if (selectedTab.toLowerCase() === globalFilters.tabFilter)
+      switch (selectedTab) {
+        case tabs.ALL:
+          setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
+          break;
+        case tabs.PHYSICAL_FITNESS:
+          setGlobalFilters({ otherFilters: [], tabFilter: filters.PHYSICAL_FITNESS });
+          break;
+        case tabs.PERSONAL_FINANCE:
+          setGlobalFilters({ otherFilters: [], tabFilter: filters.PERSONAL_FINANCE });
+          break;
+        case tabs.MENTAL_HEALTH:
+          setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
+          break;
+        default:
+          setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
+          break;
+      }
   }, [selectedTab]);
 
   const toggleDarkMode = () => {
@@ -155,6 +160,7 @@ export const AppContextProvider = ({ children }: any) => {
 
   const signUserOut = () => {
     if (!auth) return console.log("ERROR: There was a problem getting Firebase auth to sign out.");
+    console.log("user signed out", user);
     setUser(null);
     signOut(auth);
   };
@@ -181,7 +187,7 @@ export const AppContextProvider = ({ children }: any) => {
         email,
         fullName: displayName!,
       };
-
+      console.log("user changed", user);
       setUser(user);
       addUserToDB(user);
       return new Promise((resolve) => resolve("User signed in"));
@@ -258,6 +264,58 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  const likeArticle = async (articleId: string, action: string) => {
+    if (!db || !user) return console.log("ERROR: There was a problem liking article.");
+    try {
+      const createQuery = query(collection(db, "articles"), where("id", "==", articleId));
+      const querySnapshot = await getDocs(createQuery);
+      querySnapshot.forEach(async (doc) => {
+        if (action === "unlike") {
+          await updateDoc(doc.ref, {
+            ...doc.data(),
+            usersLikes: doc.data().usersLikes.filter((userId: string) => userId !== user.id),
+          });
+          return;
+        }
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          usersLikes: [...doc.data().usersLikes, user.id],
+        });
+      });
+      console.log(`Article ${articleId} ${action === "unlike" ? "unliked" : "liked"}`);
+    } catch (error) {
+      console.log("ERROR: There was a problem liking article: ", error);
+    }
+  };
+
+  const bookmarkArticle = async (articleId: string, action: string) => {
+    if (!db || !user) return console.log("ERROR: There was a problem bookmarking article.");
+    try {
+      const createQuery = query(collection(db, "articles"), where("id", "==", articleId));
+      const querySnapshot = await getDocs(createQuery);
+      querySnapshot.forEach(async (doc) => {
+        if (action === "unbookmark") {
+          await updateDoc(doc.ref, {
+            ...doc.data(),
+            usersBookmarks: doc
+              .data()
+              .usersBookmarks.filter((userId: string) => userId !== user.id),
+          });
+          return;
+        }
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          usersBookmarks: [...doc.data().usersBookmarks, user.id],
+        });
+      });
+      console.log(
+        `Article ${articleId} ${action === "unbookmark" ? "unbookmarked" : "bookmarked"}`
+      );
+    } catch (error) {
+      console.log("ERROR: There was a problem bookmarking article: ", error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -275,6 +333,10 @@ export const AppContextProvider = ({ children }: any) => {
         signInWithGoogle,
         sendPasswordReset,
         sendVerificationEmail,
+        showOnboardingModal,
+        setShowOnboardingModal,
+        likeArticle,
+        bookmarkArticle,
       }}
     >
       {!loading ? children : <></>}

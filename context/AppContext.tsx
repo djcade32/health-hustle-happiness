@@ -103,24 +103,26 @@ export const AppContextProvider = ({ children }: any) => {
 
   // Update global filters when selected tab changes
   useEffect(() => {
-    if (selectedTab.toLowerCase() === globalFilters.tabFilter)
-      switch (selectedTab) {
-        case tabs.ALL:
-          setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
-          break;
-        case tabs.PHYSICAL_FITNESS:
-          setGlobalFilters({ otherFilters: [], tabFilter: filters.PHYSICAL_FITNESS });
-          break;
-        case tabs.PERSONAL_FINANCE:
-          setGlobalFilters({ otherFilters: [], tabFilter: filters.PERSONAL_FINANCE });
-          break;
-        case tabs.MENTAL_HEALTH:
-          setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
-          break;
-        default:
-          setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
-          break;
-      }
+    if (selectedTab.toLowerCase() === globalFilters.tabFilter) return;
+
+    console.log("updating global filters");
+    switch (selectedTab) {
+      case tabs.ALL:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
+        break;
+      case tabs.PHYSICAL_FITNESS:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.PHYSICAL_FITNESS });
+        break;
+      case tabs.PERSONAL_FINANCE:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.PERSONAL_FINANCE });
+        break;
+      case tabs.MENTAL_HEALTH:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
+        break;
+      default:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
+        break;
+    }
   }, [selectedTab]);
 
   const toggleDarkMode = () => {
@@ -160,7 +162,6 @@ export const AppContextProvider = ({ children }: any) => {
 
   const signUserOut = () => {
     if (!auth) return console.log("ERROR: There was a problem getting Firebase auth to sign out.");
-    console.log("user signed out", user);
     setUser(null);
     signOut(auth);
   };
@@ -187,7 +188,7 @@ export const AppContextProvider = ({ children }: any) => {
         email,
         fullName: displayName!,
       };
-      console.log("user changed", user);
+
       setUser(user);
       addUserToDB(user);
       return new Promise((resolve) => resolve("User signed in"));

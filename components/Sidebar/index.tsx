@@ -9,6 +9,8 @@ import SidebarTab from "./SidebarTab";
 import { MdLogout } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
 import { PiBookmarkSimple } from "react-icons/pi";
+import { AiOutlineFire } from "react-icons/ai";
+import { IoHeartOutline } from "react-icons/io5";
 
 const iconProps = {
   size: 20,
@@ -41,6 +43,28 @@ const Sidebar = () => {
               }}
             />
           ))}
+        </ul>
+
+        <div className="pl-2 mb-1 mt-6">
+          <p className=" text-gray">Discover</p>
+        </div>
+        <ul className="flex flex-col ">
+          <SidebarTab
+            key={"popular"}
+            title="Popular"
+            icon={<AiOutlineFire {...iconProps} />}
+            onClick={() => {
+              setSelectedTab("Popular");
+            }}
+          />
+          <SidebarTab
+            key={"most_liked"}
+            title="Most Liked"
+            icon={<IoHeartOutline {...iconProps} />}
+            onClick={() => {
+              setSelectedTab("Most Liked");
+            }}
+          />
         </ul>
         <div className="pl-2 mb-1 mt-6">
           <p className=" text-gray">Manage</p>

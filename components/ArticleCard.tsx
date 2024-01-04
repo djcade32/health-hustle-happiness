@@ -17,22 +17,24 @@ interface Props {
 }
 
 const ArticleCard = ({ article }: Props) => {
-  const { user, setShowOnboardingModal, likeArticle, bookmarkArticle } = useAppContext();
+  const { user, setShowOnboardingModal, likeArticle, bookmarkArticle, globalFilters } =
+    useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [numOfLikes, setNumOfLikes] = useState(article.usersLikes.length);
+  const [numOfLikes, setNumOfLikes] = useState(0);
 
   // Set bookmark and like state on mount
   useEffect(() => {
     if (!user) {
       setIsBookmarked(false);
       setIsLiked(false);
-      return;
+    } else {
+      setIsBookmarked(article.usersBookmarks.includes(user?.id));
+      setIsLiked(article.usersLikes.includes(user?.id));
     }
-    setIsBookmarked(article.usersBookmarks.includes(user?.id));
-    setIsLiked(article.usersLikes.includes(user?.id));
-  }, [user?.id]);
+    setNumOfLikes(article.usersLikes.length);
+  }, [user?.id, article]);
 
   const handleBookmark = () => {
     if (!user) return setShowOnboardingModal(true);

@@ -30,6 +30,7 @@ const Feed = () => {
   //Fetch articles on load and tab change
   useEffect(() => {
     const fetchArticles = async () => {
+      console.log("fetching articles");
       scrollToTop();
       try {
         // Start loading

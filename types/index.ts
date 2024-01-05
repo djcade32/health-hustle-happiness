@@ -21,13 +21,23 @@ export type UserType = {
   fullName: string;
 };
 
-export type FilterType = "all" | "mental_health" | "physical_fitness" | "personal_finance";
+export type FilterType =
+  | "all"
+  | "mental_health"
+  | "physical_fitness"
+  | "personal_finance"
+  | "popular"
+  | "most_liked"
+  | "bookmarks";
 
 export type FilterTypes = {
   ALL: FilterType;
   PERSONAL_FINANCE: FilterType;
   PHYSICAL_FITNESS: FilterType;
   MENTAL_HEALTH: FilterType;
+  POPULAR: FilterType;
+  MOST_LIKED: FilterType;
+  BOOKMARKS: FilterType;
 };
 
 export type GlobalFiltersType = {
@@ -38,7 +48,7 @@ export type GlobalFiltersType = {
 export type QueryConditionFilterType = {
   field: string;
   operator: WhereFilterOp;
-  value: FilterType;
+  value: FilterType | string;
 };
 
 export type GetArticlesType = {

@@ -66,19 +66,23 @@ const Sidebar = () => {
             }}
           />
         </ul>
-        <div className="pl-2 mb-1 mt-6">
-          <p className=" text-gray">Manage</p>
-        </div>
-        <ul className="flex flex-col ">
-          <SidebarTab
-            key={"bookmarks"}
-            title="Bookmarks"
-            icon={<PiBookmarkSimple {...iconProps} />}
-            onClick={() => {
-              setSelectedTab("Bookmarks");
-            }}
-          />
-        </ul>
+        {user && (
+          <>
+            <div className="pl-2 mb-1 mt-6">
+              <p className=" text-gray">Manage</p>
+            </div>
+            <ul className="flex flex-col ">
+              <SidebarTab
+                key={"bookmarks"}
+                title="Bookmarks"
+                icon={<PiBookmarkSimple {...iconProps} />}
+                onClick={() => {
+                  setSelectedTab("Bookmarks");
+                }}
+              />
+            </ul>
+          </>
+        )}
       </div>
       {user && (
         <div>

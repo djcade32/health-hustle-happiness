@@ -29,6 +29,7 @@ import {
   where,
 } from "firebase/firestore";
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
+import { Spin } from "antd";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -71,6 +72,7 @@ export const AppContextProvider = ({ children }: any) => {
     onAuthStateChanged(auth, async () => {
       if (!auth.currentUser?.emailVerified) return console.log("ERROR: User is not verified.");
       if (auth.currentUser) {
+        console.log("User is signed in");
         const docRef = doc(db, `users/${auth.currentUser.uid}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -89,8 +91,8 @@ export const AppContextProvider = ({ children }: any) => {
           setUser(user);
         }
       }
+      setLoading(false);
     });
-    setLoading(false);
   }, []);
 
   // Set dark mode from local storage
@@ -105,7 +107,7 @@ export const AppContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (selectedTab.toLowerCase() === globalFilters.tabFilter) return;
 
-    console.log("updating global filters");
+    console.log("updating global filters: ", selectedTab);
     switch (selectedTab) {
       case tabs.ALL:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
@@ -119,7 +121,12 @@ export const AppContextProvider = ({ children }: any) => {
       case tabs.MENTAL_HEALTH:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
         break;
+      case tabs.BOOKMARKS:
+        console.log("Here");
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.BOOKMARKS });
+        break;
       default:
+        console.log("Here 2");
         setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
         break;
     }
@@ -340,7 +347,7 @@ export const AppContextProvider = ({ children }: any) => {
         bookmarkArticle,
       }}
     >
-      {!loading ? children : <></>}
+      {!loading ? children : <Spin fullscreen />}
     </AppContext.Provider>
   );
 };

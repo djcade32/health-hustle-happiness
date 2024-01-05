@@ -5,6 +5,9 @@ export const tabs = {
   PERSONAL_FINANCE: "Personal Finance",
   PHYSICAL_FITNESS: "Physical Fitness",
   MENTAL_HEALTH: "Mental Health",
+  POPULAR: "Popular",
+  MOST_LIKED: "Most Liked",
+  BOOKMARKS: "Bookmarks",
 };
 
 export const filters: FilterTypes = {
@@ -12,4 +15,7 @@ export const filters: FilterTypes = {
   PERSONAL_FINANCE: "personal_finance",
   PHYSICAL_FITNESS: "physical_fitness",
   MENTAL_HEALTH: "mental_health",
+  POPULAR: "popular",
+  MOST_LIKED: "most_liked",
+  BOOKMARKS: "bookmarks",
 };

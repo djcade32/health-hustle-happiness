@@ -61,7 +61,12 @@ const buildQueryConditions = (
   const queryConditions: QueryFieldFilterConstraint[] = [];
   if (conditions && conditions.length > 0) {
     conditions.forEach((condition) => {
-      if (condition.field === "type" && condition.value === filters.ALL) {
+      if (
+        condition.field === "type" &&
+        condition.value !== filters.PHYSICAL_FITNESS &&
+        condition.value !== filters.PERSONAL_FINANCE &&
+        condition.value !== filters.MENTAL_HEALTH
+      ) {
         return;
       }
       queryConditions.push(where(condition.field, condition.operator, condition.value));
@@ -83,6 +88,7 @@ function buildQuery(
 
   let queryConditions = buildQueryConditions(conditions);
   if (queryConditions.length > 0) {
+    console.log("INFO: Query conditions: ", queryConditions);
     createdQuery = query(articlesRef, orderBy("id"), limit(limitNum), ...queryConditions);
   }
   if (startAtArticle !== null && startAtArticle !== undefined) {
@@ -100,6 +106,7 @@ function buildQuery(
 
 export async function getArticles(
   filter: FilterType,
+  userId?: string,
   startAtArticle?: QueryDocumentSnapshot<DocumentData, DocumentData> | null
 ): Promise<GetArticlesType | undefined> {
   try {
@@ -111,6 +118,15 @@ export async function getArticles(
         value: filter,
       },
     ];
+
+    if (filter === filters.BOOKMARKS && userId) {
+      console.log("INFO: Getting bookmarks");
+      conditions.push({
+        field: "usersBookmarks",
+        operator: "array-contains",
+        value: userId,
+      });
+    }
     // Build necessary query to get articles
     const query = buildQuery(limitNum, conditions, startAtArticle);
     if (!query) return;

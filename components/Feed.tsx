@@ -6,9 +6,12 @@ import { Article, GetArticlesType, GlobalFiltersType } from "@/types";
 import { getArticles } from "@/lib/actions";
 import { useAppContext } from "@/context/AppContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import { Spin } from "antd";
+import { BsFilePost } from "react-icons/bs";
+import "antd/dist/antd.css";
 
 const Feed = () => {
-  const { globalFilters } = useAppContext();
+  const { globalFilters, user } = useAppContext();
   const [currentGlobalFilters, setCurrentGlobalFilters] =
     useState<GlobalFiltersType>(globalFilters);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -29,13 +32,16 @@ const Feed = () => {
 
   //Fetch articles on load and tab change
   useEffect(() => {
+    //TODO: Add removed property to Article type
+    console.log("user: ", user);
     const fetchArticles = async () => {
       console.log("fetching articles");
       scrollToTop();
       try {
         // Start loading
         setLoadingInitialArticles(true);
-        const articles = (await getArticles(globalFilters.tabFilter)) as GetArticlesType;
+        console.log("globalFilters: ", globalFilters);
+        const articles = (await getArticles(globalFilters.tabFilter, user?.id)) as GetArticlesType;
 
         setArticles(articles.articles);
         setLastArticle(articles.lastArticle);
@@ -49,6 +55,7 @@ const Feed = () => {
     };
 
     setCurrentGlobalFilters(globalFilters);
+
     fetchArticles();
   }, [globalFilters]);
 
@@ -64,6 +71,7 @@ const Feed = () => {
         setLoadingMoreArticles(true);
         const articles = (await getArticles(
           globalFilters.tabFilter,
+          user?.id,
           lastArticle
         )) as GetArticlesType;
         if (!articles) {
@@ -93,10 +101,6 @@ const Feed = () => {
 
   //Determine if reached bottom of page
   const handleScroll = () => {
-    // console.log("innerHeight: ", window.innerHeight);
-    // console.log("scrollTop: ", document.documentElement.scrollTop);
-    // console.log("scrollHeight: ", document.documentElement.scrollHeight);
-    // console.log("Bottom offset: ", BOTTOM_OFFSET);
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight - BOTTOM_OFFSET
@@ -111,13 +115,34 @@ const Feed = () => {
   }
 
   return (
-    <section className="flex flex-1 max-w-fit">
-      <div className="flex flex-wrap gap-8 ">
-        {articles?.map((article, index) => (
-          <ArticleCard key={index} article={article} />
-        ))}
-      </div>
-    </section>
+    <>
+      {loadingInitialArticles ? (
+        <div className="flex justify-center w-full">
+          <div className="flex items-center ">
+            <Spin size="large" />
+          </div>
+        </div>
+      ) : (
+        <>
+          {articles.length > 0 ? (
+            <section className="flex flex-1 max-w-fit">
+              <div className="flex flex-wrap gap-8 ">
+                {articles.map((article, index) => (
+                  <ArticleCard key={index} article={article} />
+                ))}
+              </div>
+            </section>
+          ) : (
+            <div className="flex justify-center w-full">
+              <div className="flex items-center ">
+                <BsFilePost size={30} color="#D3E3FD" />
+                <p className="ml-2 subtitle-text text-[#D3E3FD]">No articles found</p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

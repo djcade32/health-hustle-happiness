@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import OnboardingModal from "@/components/OnboardingModal";
 import { useAppContext } from "@/context/AppContext";
 

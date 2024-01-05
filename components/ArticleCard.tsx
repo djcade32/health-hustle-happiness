@@ -39,12 +39,6 @@ const ArticleCard = ({ article }: Props) => {
     setNumOfLikes(article.usersLikes.length);
   }, [user?.id, article]);
 
-  // useEffect(() => {
-  //   if (globalFilters.tabFilter === filters.BOOKMARKS) {
-  //     setShow(isBookmarked);
-  //   }
-  // }, [globalFilters]);
-
   const handleBookmark = () => {
     if (!user) return setShowOnboardingModal(true);
     if (isBookmarked) {

@@ -88,7 +88,6 @@ function buildQuery(
 
   let queryConditions = buildQueryConditions(conditions);
   if (queryConditions.length > 0) {
-    console.log("INFO: Query conditions: ", queryConditions);
     createdQuery = query(articlesRef, orderBy("id"), limit(limitNum), ...queryConditions);
   }
   if (startAtArticle !== null && startAtArticle !== undefined) {

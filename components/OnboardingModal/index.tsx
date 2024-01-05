@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Form, Modal } from "antd";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
@@ -29,7 +29,12 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    console.log("isOpen: ", isOpen);
+  }, []);
+
   const handleModalClose = () => {
+    console.log("handleModalClose being ran");
     setIsOpen(false);
     setIsSignupShowing(false);
     setIsForgotPasswordShowing(false);
@@ -38,6 +43,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   };
 
   const onSubmit = async (values: any) => {
+    console.log("onSubmit being ran");
     try {
       if (isSignupShowing) {
         createAccount(values.email.trim(), values.password, values.fullName.trim()).then(() => {
@@ -45,8 +51,12 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
           setFormError(null);
           setShowVerifyEmailMessage(true);
         });
+        return;
       } else {
-        await signUserIn(values.email.trim(), values.password);
+        const isSignedIn = await signUserIn(values.email.trim(), values.password);
+        if (isSignedIn === "User signed in") {
+          handleModalClose();
+        }
       }
     } catch (error) {
       console.log("caught error: ", error);
@@ -128,7 +138,6 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
       title={getTitle()}
       centered
       open={isOpen}
-      onOk={handleModalClose}
       onCancel={handleModalClose}
       width={500}
       footer={null}

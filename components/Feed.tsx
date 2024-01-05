@@ -32,14 +32,12 @@ const Feed = () => {
   //Fetch articles on load and tab change
   useEffect(() => {
     //TODO: Add removed property to Article type
-    console.log("user: ", user);
     const fetchArticles = async () => {
       console.log("fetching articles");
       scrollToTop();
       try {
         // Start loading
         setLoadingInitialArticles(true);
-        console.log("globalFilters: ", globalFilters);
         const articles = (await getArticles(globalFilters.tabFilter, user?.id)) as GetArticlesType;
 
         setArticles(articles.articles);
@@ -53,14 +51,11 @@ const Feed = () => {
       }
     };
 
-    setCurrentGlobalFilters(globalFilters);
-
     fetchArticles();
   }, [globalFilters]);
 
   // Fetch more articles on bottom of page reached
   useEffect(() => {
-    // if (loadingInitialArticles || loadingMoreArticles) return;
     if (loadingMoreArticles || loadingInitialArticles) return;
     const fetchArticles = async () => {
       try {

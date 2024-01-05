@@ -70,9 +70,11 @@ export const AppContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
     onAuthStateChanged(auth, async () => {
-      if (!auth.currentUser?.emailVerified) return console.log("ERROR: User is not verified.");
+      if (!auth.currentUser?.emailVerified) {
+        console.log("User is not verified.");
+        setLoading(false);
+      }
       if (auth.currentUser) {
-        console.log("User is signed in");
         const docRef = doc(db, `users/${auth.currentUser.uid}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -122,11 +124,9 @@ export const AppContextProvider = ({ children }: any) => {
         setGlobalFilters({ otherFilters: [], tabFilter: filters.MENTAL_HEALTH });
         break;
       case tabs.BOOKMARKS:
-        console.log("Here");
         setGlobalFilters({ otherFilters: [], tabFilter: filters.BOOKMARKS });
         break;
       default:
-        console.log("Here 2");
         setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
         break;
     }

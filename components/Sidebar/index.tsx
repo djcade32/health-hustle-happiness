@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { LuBrain } from "react-icons/lu";
 import { IoFitnessOutline } from "react-icons/io5";
 import { GoInfinity } from "react-icons/go";
 import SidebarTab from "./SidebarTab";
 import { MdLogout } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
-import { PiBookmarkSimple, PiMoneyLight } from "react-icons/pi";
+import { PiBookmarkSimple, PiMoneyLight, PiBrainLight } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
 import { IoHeartOutline, IoEyeOutline } from "react-icons/io5";
 
@@ -19,7 +18,7 @@ const categories = [
   { name: "All", icon: <GoInfinity {...iconProps} /> },
   { name: "Physical Fitness", icon: <IoFitnessOutline {...iconProps} /> },
   { name: "Personal Finance", icon: <PiMoneyLight {...iconProps} /> },
-  { name: "Mental Health", icon: <LuBrain {...iconProps} /> },
+  { name: "Mental Health", icon: <PiBrainLight {...iconProps} /> },
 ];
 
 const Sidebar = () => {

@@ -116,24 +116,55 @@ const ArticleCard = ({ article }: Props) => {
             />
 
             <div className="flex flex-row justify-between pt-2 pb-1 px-[30px] ">
-              <div className="flex gap-1 items-center cursor-pointer" onClick={handleLike}>
-                <div className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1">
-                  {isLiked ? <IoHeartSharp size={25} /> : <IoHeartOutline size={25} />}
+              <div className="flex gap-1 items-center">
+                <div
+                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                  onClick={handleLike}
+                >
+                  <Tooltip
+                    title="Like"
+                    placement="top"
+                    color="white"
+                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  >
+                    {isLiked ? <IoHeartSharp size={25} /> : <IoHeartOutline size={25} />}
+                  </Tooltip>
                 </div>
                 {numOfLikes > 0 && <p>{numOfLikes}</p>}
               </div>
-              <div className="flex gap-1 items-center cursor-pointer" onClick={handleBookmark}>
-                <div className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1">
-                  {isBookmarked ? (
-                    <PiBookmarkSimpleFill size={25} />
-                  ) : (
-                    <PiBookmarkSimple size={25} />
-                  )}
+
+              <div className="flex gap-1 items-center">
+                <div
+                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                  onClick={handleBookmark}
+                >
+                  <Tooltip
+                    title="Bookmark"
+                    placement="top"
+                    color="white"
+                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  >
+                    {isBookmarked ? (
+                      <PiBookmarkSimpleFill size={25} />
+                    ) : (
+                      <PiBookmarkSimple size={25} />
+                    )}
+                  </Tooltip>
                 </div>
               </div>
-              <div className="flex gap-1 items-center cursor-pointer" onClick={() => {}}>
-                <div className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1">
-                  <PiShareFat size={25} />
+              <div className="flex gap-1 items-center">
+                <div
+                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                  onClick={() => {}}
+                >
+                  <Tooltip
+                    title="Share"
+                    placement="top"
+                    color="white"
+                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  >
+                    <PiShareFat size={25} />
+                  </Tooltip>
                 </div>
               </div>
             </div>

@@ -25,3 +25,26 @@ export function getFirstLetters(inputString: string) {
     .map((word) => word.charAt(0))
     .join("");
 }
+
+export function calculateDaysBetweenDates(
+  date1InMilliseconds: number,
+  date2InMilliseconds: number
+) {
+  const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+
+  // Calculate the difference in milliseconds between the two dates
+  const timeDifference = Math.abs(date1InMilliseconds - date2InMilliseconds);
+
+  // Calculate the number of days
+  const daysDifference = Math.ceil(timeDifference / oneDayMilliseconds);
+
+  return daysDifference;
+}
+
+export function formatNumberToTwoDecimalPlaces(number: number) {
+  // Convert the number to a string with two decimal places
+  const formattedNumber = number.toFixed(2);
+
+  // Convert the string back to a number (optional, depending on your use case)
+  return Number(formattedNumber);
+}

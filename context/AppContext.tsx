@@ -20,9 +20,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -30,6 +27,7 @@ import {
 } from "firebase/firestore";
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
 import { Spin } from "antd";
+import { calculateDaysBetweenDates, formatNumberToTwoDecimalPlaces } from "@/utils";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -50,6 +48,7 @@ type AppContextType = {
   setShowOnboardingModal: (show: boolean) => void;
   likeArticle: (articleId: string, action: string) => void;
   bookmarkArticle: (articleId: string, action: string) => void;
+  incrementNumViews: (articleId: string) => void;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -125,6 +124,12 @@ export const AppContextProvider = ({ children }: any) => {
         break;
       case tabs.BOOKMARKS:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.BOOKMARKS });
+        break;
+      case tabs.MOST_LIKED:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.MOST_LIKED });
+        break;
+      case tabs.POPULAR:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.POPULAR });
         break;
       default:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
@@ -282,12 +287,20 @@ export const AppContextProvider = ({ children }: any) => {
           await updateDoc(doc.ref, {
             ...doc.data(),
             usersLikes: doc.data().usersLikes.filter((userId: string) => userId !== user.id),
+            numOfLikes: doc.data().numOfLikes - 1,
+            ranking: formatNumberToTwoDecimalPlaces(
+              doc.data().ranking - 2 - getRankingMultiplier(doc.data())
+            ),
           });
           return;
         }
         await updateDoc(doc.ref, {
           ...doc.data(),
           usersLikes: [...doc.data().usersLikes, user.id],
+          numOfLikes: doc.data().numOfLikes + 1,
+          ranking: formatNumberToTwoDecimalPlaces(
+            doc.data().ranking + 2 + getRankingMultiplier(doc.data())
+          ),
         });
       });
       console.log(`Article ${articleId} ${action === "unlike" ? "unliked" : "liked"}`);
@@ -308,12 +321,20 @@ export const AppContextProvider = ({ children }: any) => {
             usersBookmarks: doc
               .data()
               .usersBookmarks.filter((userId: string) => userId !== user.id),
+            bookmarkedDate: null,
+            ranking: formatNumberToTwoDecimalPlaces(
+              doc.data().ranking - 3 - getRankingMultiplier(doc.data())
+            ),
           });
           return;
         }
         await updateDoc(doc.ref, {
           ...doc.data(),
           usersBookmarks: [...doc.data().usersBookmarks, user.id],
+          bookmarkedDate: Date.now(),
+          ranking: formatNumberToTwoDecimalPlaces(
+            doc.data().ranking + 3 + getRankingMultiplier(doc.data())
+          ),
         });
       });
       console.log(
@@ -322,6 +343,32 @@ export const AppContextProvider = ({ children }: any) => {
     } catch (error) {
       console.log("ERROR: There was a problem bookmarking article: ", error);
     }
+  };
+
+  const incrementNumViews = async (articleId: string) => {
+    if (!db) return console.log("ERROR: There was a problem incrementing article num views.");
+    try {
+      const createQuery = query(collection(db, "articles"), where("id", "==", articleId));
+      const querySnapshot = await getDocs(createQuery);
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          numViews: doc.data().numViews + 1,
+          ranking: formatNumberToTwoDecimalPlaces(
+            doc.data().ranking + 1 + getRankingMultiplier(doc.data())
+          ),
+        });
+      });
+      console.log(`Article ${articleId} num views incremented`);
+    } catch (error) {
+      console.log("ERROR: There was a problem incrementing article num views: ", error);
+    }
+  };
+
+  const getRankingMultiplier = (article: any) => {
+    const multiplier = (1 / calculateDaysBetweenDates(article.date, Date.now())) * 100;
+    console.log("Multiplier: ", multiplier);
+    return formatNumberToTwoDecimalPlaces(multiplier);
   };
 
   return (
@@ -345,6 +392,7 @@ export const AppContextProvider = ({ children }: any) => {
         setShowOnboardingModal,
         likeArticle,
         bookmarkArticle,
+        incrementNumViews,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

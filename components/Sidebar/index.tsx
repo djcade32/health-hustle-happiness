@@ -2,15 +2,14 @@
 
 import React from "react";
 import { LuBrain } from "react-icons/lu";
-import { GrMoney } from "react-icons/gr";
 import { IoFitnessOutline } from "react-icons/io5";
 import { GoInfinity } from "react-icons/go";
 import SidebarTab from "./SidebarTab";
 import { MdLogout } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
-import { PiBookmarkSimple } from "react-icons/pi";
+import { PiBookmarkSimple, PiMoneyLight } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline, IoEyeOutline } from "react-icons/io5";
 
 const iconProps = {
   size: 20,
@@ -19,7 +18,7 @@ const iconProps = {
 const categories = [
   { name: "All", icon: <GoInfinity {...iconProps} /> },
   { name: "Physical Fitness", icon: <IoFitnessOutline {...iconProps} /> },
-  { name: "Personal Finance", icon: <GrMoney {...iconProps} /> },
+  { name: "Personal Finance", icon: <PiMoneyLight {...iconProps} /> },
   { name: "Mental Health", icon: <LuBrain {...iconProps} /> },
 ];
 
@@ -78,6 +77,14 @@ const Sidebar = () => {
                 icon={<PiBookmarkSimple {...iconProps} />}
                 onClick={() => {
                   setSelectedTab("Bookmarks");
+                }}
+              />
+              <SidebarTab
+                key={"recently_viewed"}
+                title="Recently Viewed"
+                icon={<IoEyeOutline {...iconProps} />}
+                onClick={() => {
+                  setSelectedTab("Recently Viewed");
                 }}
               />
             </ul>

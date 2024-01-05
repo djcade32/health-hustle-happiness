@@ -29,12 +29,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    console.log("isOpen: ", isOpen);
-  }, []);
-
   const handleModalClose = () => {
-    console.log("handleModalClose being ran");
     setIsOpen(false);
     setIsSignupShowing(false);
     setIsForgotPasswordShowing(false);
@@ -43,7 +38,8 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   };
 
   const onSubmit = async (values: any) => {
-    console.log("onSubmit being ran");
+    console.log("onSubmit eing ran");
+    setLoading(true);
     try {
       if (isSignupShowing) {
         createAccount(values.email.trim(), values.password, values.fullName.trim()).then(() => {
@@ -78,6 +74,8 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
       } else if (error === "User is not verified") {
         setShowVerifyEmailMessage(true);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,9 +109,10 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
             <LoginForms
               onSubmit={onSubmit}
               setIsForgotPasswordShowing={setIsForgotPasswordShowing}
+              loading={loading}
             />
           ) : (
-            <SignupForms onSubmit={onSubmit} />
+            <SignupForms onSubmit={onSubmit} loading={loading} />
           )}
         </Form>
       );

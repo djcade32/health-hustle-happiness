@@ -13,6 +13,7 @@ export type Article = {
   ranking: number;
   usersLikes: string[];
   usersBookmarks: string[];
+  numOfLikes: number;
 };
 
 export type UserType = {
@@ -48,7 +49,7 @@ export type GlobalFiltersType = {
 export type QueryConditionFilterType = {
   field: string;
   operator: WhereFilterOp;
-  value: FilterType | string;
+  value: FilterType | string | number;
 };
 
 export type GetArticlesType = {

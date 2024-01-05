@@ -11,8 +11,6 @@ import { BsFilePost } from "react-icons/bs";
 
 const Feed = () => {
   const { globalFilters, user } = useAppContext();
-  const [currentGlobalFilters, setCurrentGlobalFilters] =
-    useState<GlobalFiltersType>(globalFilters);
   const [articles, setArticles] = useState<Article[]>([]);
   const [lastArticle, setLastArticle] = useState<QueryDocumentSnapshot<
     DocumentData,

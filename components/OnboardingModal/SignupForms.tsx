@@ -5,9 +5,10 @@ import { FaRegUser } from "react-icons/fa6";
 
 interface Props {
   onSubmit: (values: any) => void;
+  loading: boolean;
 }
 
-const SignupForms = ({ onSubmit }: Props) => {
+const SignupForms = ({ onSubmit, loading }: Props) => {
   return (
     <>
       <input autoComplete="false" name="hidden" type="text" style={{ display: "none" }}></input>
@@ -64,7 +65,7 @@ const SignupForms = ({ onSubmit }: Props) => {
             htmlType="submit"
             className="w-[40%] bg-accent hover:opacity-75 transition-opacity duration-300"
             size="large"
-            loading={false}
+            loading={loading}
             onClick={() => {}}
             style={{ color: "white", fontWeight: 500, border: "none" }}
           >

@@ -19,8 +19,14 @@ interface Props {
 }
 
 const ArticleCard = ({ article }: Props) => {
-  const { user, setShowOnboardingModal, likeArticle, bookmarkArticle, globalFilters } =
-    useAppContext();
+  const {
+    user,
+    setShowOnboardingModal,
+    likeArticle,
+    bookmarkArticle,
+    globalFilters,
+    incrementNumViews,
+  } = useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -36,7 +42,7 @@ const ArticleCard = ({ article }: Props) => {
       setIsBookmarked(article.usersBookmarks.includes(user?.id));
       setIsLiked(article.usersLikes.includes(user?.id));
     }
-    setNumOfLikes(article.usersLikes.length);
+    setNumOfLikes(article.numOfLikes);
   }, [user?.id, article]);
 
   const handleBookmark = () => {
@@ -75,6 +81,7 @@ const ArticleCard = ({ article }: Props) => {
                 color="white"
                 overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
               >
+                {/* TODO: Add placeholder image for website logo and image */}
                 <Image
                   src={article.logo}
                   alt="health hustle happiness"
@@ -84,6 +91,7 @@ const ArticleCard = ({ article }: Props) => {
                 />
               </Tooltip>
               <Link
+                onClick={() => incrementNumViews(article.id)}
                 href={article.link}
                 target="_blank"
                 className="bg-white opacity-0 text-primary max-w-fit py-1 px-2 rounded-xl cursor-pointer flex items-center gap-1 hover:opacity-75 group-hover:opacity-100"

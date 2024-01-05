@@ -77,6 +77,7 @@ const buildQueryConditions = (
 
 function buildQuery(
   limitNum: number,
+  orderByField: string,
   conditions?: QueryConditionFilterType[],
   startAtArticle?: any
 ): Query<DocumentData, DocumentData> | null {
@@ -84,16 +85,21 @@ function buildQuery(
   if (!db) return null;
 
   const articlesRef = collection(db, "articles");
-  let createdQuery = query(articlesRef, orderBy("id"), limit(limitNum));
+  let createdQuery = query(articlesRef, orderBy(orderByField, "desc"), limit(limitNum));
 
   let queryConditions = buildQueryConditions(conditions);
   if (queryConditions.length > 0) {
-    createdQuery = query(articlesRef, orderBy("id"), limit(limitNum), ...queryConditions);
+    createdQuery = query(
+      articlesRef,
+      orderBy(orderByField, "desc"),
+      limit(limitNum),
+      ...queryConditions
+    );
   }
   if (startAtArticle !== null && startAtArticle !== undefined) {
     createdQuery = query(
       articlesRef,
-      orderBy("id"),
+      orderBy(orderByField, "desc"),
       limit(limitNum),
       ...queryConditions,
       startAfter(startAtArticle)
@@ -110,6 +116,7 @@ export async function getArticles(
 ): Promise<GetArticlesType | undefined> {
   try {
     let limitNum = 20;
+    let orderByField = "id";
     const conditions: QueryConditionFilterType[] = [
       {
         field: "type",
@@ -119,15 +126,27 @@ export async function getArticles(
     ];
 
     if (filter === filters.BOOKMARKS && userId) {
-      console.log("INFO: Getting bookmarks");
+      orderByField = "date";
       conditions.push({
         field: "usersBookmarks",
         operator: "array-contains",
         value: userId,
       });
     }
+    if (filter === filters.MOST_LIKED) {
+      orderByField = "numOfLikes";
+      conditions.push({
+        field: "numOfLikes",
+        operator: ">",
+        value: 0,
+      });
+    }
+    if (filter === filters.POPULAR) {
+      //ToDo: Add logic to take into account date article is added
+      orderByField = "ranking";
+    }
     // Build necessary query to get articles
-    const query = buildQuery(limitNum, conditions, startAtArticle);
+    const query = buildQuery(limitNum, orderByField, conditions, startAtArticle);
     if (!query) return;
 
     //Get articles from DB
@@ -146,7 +165,7 @@ export async function getArticles(
 }
 
 export async function updateArticles() {
-  const type = filters.PERSONAL_FINANCE;
+  const id = "ff9c1b7e-de66-447b-ad42-696585f5cdfb";
   try {
     const db = getFirebaseDB();
     if (!db) return;
@@ -154,7 +173,12 @@ export async function updateArticles() {
     querySnapshot.forEach(async (doc) => {
       await updateDoc(doc.ref, {
         ...doc.data(),
+        numViews: 0,
+        numOfLikes: 0,
+        bookmarkedDate: null,
+        usersBookmarks: [],
         usersLikes: [],
+        ranking: 0,
       });
       // if (doc.data().type === "Personal Finance") {
       //   await updateDoc(doc.ref, {

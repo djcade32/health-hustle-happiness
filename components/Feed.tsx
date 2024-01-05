@@ -8,7 +8,6 @@ import { useAppContext } from "@/context/AppContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { Spin } from "antd";
 import { BsFilePost } from "react-icons/bs";
-import "antd/dist/antd.css";
 
 const Feed = () => {
   const { globalFilters, user } = useAppContext();

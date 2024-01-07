@@ -41,12 +41,19 @@ const ForgotPasswordForms = ({ setIsForgotPasswordShowing }: Props) => {
       ) : (
         <Form autoComplete="off" name="normal_login" onFinish={onSubmit}>
           <Form.Item name="email" rules={[{ required: true, message: "Please input your Email!" }]}>
-            <Input size="large" type="email" prefix={<MdOutlineEmail />} placeholder="Email" />
+            <Input
+              size="large"
+              type="email"
+              prefix={<MdOutlineEmail />}
+              placeholder="Email"
+              styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+              className="input-style "
+            />
           </Form.Item>
           <Form.Item>
             <div className="flex justify-between items-center">
               <p
-                className="cursor-pointer underline text-gray hover:text-primary hover:no-underline"
+                className="cursor-pointer underline text-gray hover:text-white hover:no-underline"
                 onClick={() => setIsForgotPasswordShowing(false)}
               >
                 Back to log in

@@ -8,6 +8,7 @@ export const tabs = {
   POPULAR: "Popular",
   MOST_LIKED: "Most Liked",
   BOOKMARKS: "Bookmarks",
+  RECENTLY_VIEWED: "Recently Viewed",
 };
 
 export const filters: FilterTypes = {
@@ -18,4 +19,5 @@ export const filters: FilterTypes = {
   POPULAR: "popular",
   MOST_LIKED: "most_liked",
   BOOKMARKS: "bookmarks",
+  RECENTLY_VIEWED: "recently_viewed",
 };

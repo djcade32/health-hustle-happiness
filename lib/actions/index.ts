@@ -141,6 +141,14 @@ export async function getArticles(
         value: 0,
       });
     }
+    if (filter === filters.RECENTLY_VIEWED && userId) {
+      orderByField = "date";
+      conditions.push({
+        field: "recentlyViewedUsers",
+        operator: "array-contains",
+        value: userId,
+      });
+    }
     if (filter === filters.POPULAR) {
       //ToDo: Add logic to take into account date article is added
       orderByField = "ranking";
@@ -173,12 +181,7 @@ export async function updateArticles() {
     querySnapshot.forEach(async (doc) => {
       await updateDoc(doc.ref, {
         ...doc.data(),
-        numViews: 0,
-        numOfLikes: 0,
-        bookmarkedDate: null,
-        usersBookmarks: [],
-        usersLikes: [],
-        ranking: 0,
+        recentlyViewedUsers: [],
       });
       // if (doc.data().type === "Personal Finance") {
       //   await updateDoc(doc.ref, {

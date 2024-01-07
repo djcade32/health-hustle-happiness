@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Form, Modal } from "antd";
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
@@ -141,16 +141,18 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
       width={500}
       footer={null}
       maskClosable={false}
+      className="bg-primary rounded-xl text-white border-gray border-[1px]"
+      styles={{ mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" } }}
     >
       {showVerifyEmailMessage ? (
-        <div className="text-center py-2">
+        <div className="text-center py-2 text-white">
           <p>
             Check your email for a link to verify your account. If it doesn’t appear within a few
             minutes, check your spam folder.
           </p>
           <div className="flex justify-between items-center mt-2">
             <p
-              className="cursor-pointer underline text-gray hover:text-primary hover:no-underline"
+              className="cursor-pointer underline text-gray hover:text-white hover:no-underline"
               onClick={() => setShowVerifyEmailMessage(false)}
             >
               Back to log in
@@ -173,27 +175,27 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
             <>
               <div
                 onClick={handleGoogleButtonClick}
-                className="border-[1px] border-[#BFBFBF] hover:border-accent text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
+                className="border-[1px] border-gray hover:border-white text-white flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
               >
                 <FcGoogle size={25} className="mr-2" />
                 <p>Google</p>
               </div>
 
               <div className="w-full flex justify-center items-center gap-2 mb-2">
-                <div className="bg-[#BFBFBF] w-full h-[1px]" />
+                <div className="bg-gray w-full h-[1px]" />
                 <p>or</p>
-                <div className="bg-[#BFBFBF] w-full h-[1px]" />
+                <div className="bg-gray w-full h-[1px]" />
               </div>
             </>
           )}
           {formError && <p className="text-red-500 text-center">{formError}</p>}
           {getCorrectForm()}
-          <div className="w-full bg-[#BFBFBF] h-[1px] " />
+          <div className="w-full bg-gray h-[1px] " />
           <div className="flex justify-center items-center mt-2">
             <p className="mr-2">
               {!isSignupShowing ? "Don't have an account?" : "Already have an account?"}
             </p>
-            <p className="text-accent hover:text-primary cursor-pointer" onClick={handleFormChange}>
+            <p className="text-gray hover:text-white cursor-pointer" onClick={handleFormChange}>
               {!isSignupShowing ? "Sign up" : "Log in"}
             </p>
           </div>

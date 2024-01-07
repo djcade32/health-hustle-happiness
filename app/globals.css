@@ -6,10 +6,30 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  
 }
 
 .ant-spin-dot-item {
   background-color: #D3E3FD !important;
+}
+
+.ant-input::placeholder {
+  color: #f2f2f2;
+}
+
+/* Show password icon on input */
+:where(.css-dev-only-do-not-override-1peozn).ant-input-affix-wrapper .anticon.ant-input-password-icon {
+  color: #96A7BF
+}
+:where(.css-dev-only-do-not-override-1peozn).ant-input-affix-wrapper .anticon.ant-input-password-icon:hover {
+  color: #f2f2f2;
+}
+/* Exit icon on modal */
+:where(.css-dev-only-do-not-override-1peozn).ant-modal .ant-modal-close{
+  color: #96A7BF;
+}
+:where(.css-dev-only-do-not-override-1peozn).ant-modal .ant-modal-close:hover{
+  color: #f2f2f2;
 }
 
 @layer base {
@@ -32,6 +52,10 @@
   .small-text {
     @apply text-[12px];
   }
+
+  .input-style {
+    @apply bg-primary-light text-white border-transparent
+  }
   
   .debug-1 {
     @apply border-2 border-red-500;
@@ -45,5 +69,6 @@
     @apply border-2 border-blue-500;
   } 
 }
+
 
 

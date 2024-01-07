@@ -8,8 +8,13 @@ const theme: ThemeConfig = {
   components: {
     Button: {},
     Input: {
-      activeBorderColor: "#0742A0",
-      hoverBorderColor: "#0742A0",
+      activeBorderColor: "#f2f2f2",
+      hoverBorderColor: "#f2f2f2",
+    },
+    Modal: {
+      contentBg: "transparent",
+      headerBg: "transparent",
+      titleColor: "#f2f2f2",
     },
   },
 };

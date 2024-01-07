@@ -29,7 +29,8 @@ export type FilterType =
   | "personal_finance"
   | "popular"
   | "most_liked"
-  | "bookmarks";
+  | "bookmarks"
+  | "recently_viewed";
 
 export type FilterTypes = {
   ALL: FilterType;
@@ -39,6 +40,7 @@ export type FilterTypes = {
   POPULAR: FilterType;
   MOST_LIKED: FilterType;
   BOOKMARKS: FilterType;
+  RECENTLY_VIEWED: FilterType;
 };
 
 export type GlobalFiltersType = {

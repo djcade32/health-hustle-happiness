@@ -4,9 +4,9 @@ import React from "react";
 import { IoFitnessOutline } from "react-icons/io5";
 import { GoInfinity } from "react-icons/go";
 import SidebarTab from "./SidebarTab";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlineFeedback } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
-import { PiBookmarkSimple, PiMoneyLight, PiBrainLight } from "react-icons/pi";
+import { PiBookmarkSimple, PiMoneyLight, PiBrainLight, PiHandHeart } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
 import { IoHeartOutline, IoEyeOutline } from "react-icons/io5";
 
@@ -23,6 +23,14 @@ const categories = [
 
 const Sidebar = () => {
   const { selectedTab, setSelectedTab, signUserOut, user } = useAppContext();
+
+  const handleFeedbackClick = () => {
+    window.open("https://forms.gle/YRVqQKpNqBzZky9H8", "_blank");
+  };
+
+  const handleSupportCreatorClick = () => {
+    window.open("https://bmc.link/normancade", "_blank");
+  };
 
   return (
     <aside className="flex flex-col w-[250px] border-r-[.5px] border-gray fixed left-0 h-full bg-primary pt-8 justify-between pb-[90px]">
@@ -90,17 +98,37 @@ const Sidebar = () => {
           </>
         )}
       </div>
-      {user && (
-        <div>
+
+      <div>
+        {/* <div className="pl-2 mb-1 mt-6">
+        <p className=" text-gray">Support</p>
+      </div> */}
+        <ul className="flex flex-col ">
           <SidebarTab
-            key={"sign_out"}
-            title="Sign out"
-            icon={<MdLogout {...iconProps} />}
-            onClick={signUserOut}
-            showSelected={false}
+            key={"feedback"}
+            title="Feedback"
+            icon={<MdOutlineFeedback {...iconProps} />}
+            onClick={handleFeedbackClick}
           />
-        </div>
-      )}
+          <SidebarTab
+            key={"support_creator"}
+            title="Support Creator"
+            icon={<PiHandHeart {...iconProps} />}
+            onClick={handleSupportCreatorClick}
+          />
+        </ul>
+        {user && (
+          <div>
+            <SidebarTab
+              key={"sign_out"}
+              title="Sign out"
+              icon={<MdLogout {...iconProps} />}
+              onClick={signUserOut}
+              showSelected={false}
+            />
+          </div>
+        )}
+      </div>
     </aside>
   );
 };

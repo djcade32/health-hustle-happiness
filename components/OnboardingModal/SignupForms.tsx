@@ -22,7 +22,14 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           },
         ]}
       >
-        <Input size="large" type="text" prefix={<FaRegUser />} placeholder="Full name" />
+        <Input
+          size="large"
+          type="text"
+          prefix={<FaRegUser />}
+          placeholder="Full name"
+          className="input-style"
+          styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+        />
       </Form.Item>
       <Form.Item
         name="email"
@@ -35,8 +42,9 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           type="email"
           prefix={<MdOutlineEmail />}
           placeholder="Email"
-          className="mt-2"
           autoComplete="false"
+          className="input-style mt-2"
+          styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
         />
       </Form.Item>
       <Form.Item
@@ -51,12 +59,13 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
         ]}
       >
         <Input.Password
-          className="mt-2"
           size="large"
           placeholder="Password"
           prefix={<MdLockOutline />}
           onPressEnter={onSubmit}
           autoComplete="false"
+          className="input-style mt-2"
+          styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
         />
       </Form.Item>
       <Form.Item>
@@ -73,8 +82,8 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           </Button>
           <p className="text-[12px] text-gray mt-2">
             By signing up I accept the{" "}
-            <a className="underline text-gray hover:text-primary">Terms of Service</a> and the{" "}
-            <a className="underline text-gray hover:text-primary">Privacy Policy</a>.
+            <a className="underline text-gray hover:text-white">Terms of Service</a> and the{" "}
+            <a className="underline text-gray hover:text-white">Privacy Policy</a>.
           </p>
         </div>
       </Form.Item>

@@ -1,24 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Article } from "@/types";
 import { convertSnakeCaseToTitleCase, formatArticleCardDate } from "@/utils";
-import { Tooltip } from "antd";
+import { Modal, Tooltip } from "antd";
 import { PiBookmarkSimple, PiBookmarkSimpleFill } from "react-icons/pi";
 import { MdOpenInNew } from "react-icons/md";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
 import { PiShareFat } from "react-icons/pi";
 import { useAppContext } from "@/context/AppContext";
 import { filters } from "@/enums";
-import { get } from "http";
 
 interface Props {
   article: Article;
+  setArticleToShare: (article: Article) => void;
 }
 
-const ArticleCard = ({ article }: Props) => {
+const ArticleCard = ({ article, setArticleToShare }: Props) => {
   const {
     user,
     setShowOnboardingModal,
@@ -26,12 +26,14 @@ const ArticleCard = ({ article }: Props) => {
     bookmarkArticle,
     globalFilters,
     incrementNumViews,
+    addUserToRecentlyViewed,
+    setShowShareModal,
+    showShareModal,
   } = useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [numOfLikes, setNumOfLikes] = useState(0);
-  const [show, setShow] = useState(true);
 
   // Set bookmark and like state on mount
   useEffect(() => {
@@ -67,6 +69,33 @@ const ArticleCard = ({ article }: Props) => {
     return setIsLiked((prev) => !prev);
   };
 
+  const handleClickToRead = () => {
+    incrementNumViews(article.id);
+    addUserToRecentlyViewed(article.id);
+  };
+
+  const handleShare = () => {
+    if (!user) return setShowOnboardingModal(true);
+
+    // navigator.clipboard.writeText(article.link);
+    console.log("Sharing article");
+    setShowShareModal(true);
+    setArticleToShare(article);
+    // const textToShare = "Check out this awesome content!";
+    // const imageUrl = article.image;
+
+    // // Twitter Web Intent URL
+    // // const twitterIntentUrl = "https://www.reddit.com/submit?url=" + encodeURIComponent(textToShare);
+    // const twitterIntentUrl =
+    //   "https://twitter.com/intent/tweet?text=" +
+    //   encodeURIComponent(textToShare) +
+    //   "&url=" +
+    //   encodeURIComponent(imageUrl);
+
+    // // Open a new window with the Twitter intent URL
+    // window.open(twitterIntentUrl, "_blank");
+  };
+
   return (
     <>
       {globalFilters.tabFilter === filters.BOOKMARKS && !isBookmarked ? (
@@ -91,7 +120,7 @@ const ArticleCard = ({ article }: Props) => {
                 />
               </Tooltip>
               <Link
-                onClick={() => incrementNumViews(article.id)}
+                onClick={handleClickToRead}
                 href={article.link}
                 target="_blank"
                 className="bg-white opacity-0 text-primary max-w-fit py-1 px-2 rounded-xl cursor-pointer flex items-center gap-1 hover:opacity-75 group-hover:opacity-100"
@@ -117,55 +146,56 @@ const ArticleCard = ({ article }: Props) => {
 
             <div className="flex flex-row justify-between pt-2 pb-1 px-[30px] ">
               <div className="flex gap-1 items-center">
-                <div
-                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
-                  onClick={handleLike}
+                <Tooltip
+                  title="Like"
+                  placement="top"
+                  color="white"
+                  overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
                 >
-                  <Tooltip
-                    title="Like"
-                    placement="top"
-                    color="white"
-                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  <div
+                    className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                    onClick={handleLike}
                   >
                     {isLiked ? <IoHeartSharp size={25} /> : <IoHeartOutline size={25} />}
-                  </Tooltip>
-                </div>
+                  </div>
+                </Tooltip>
+
                 {numOfLikes > 0 && <p>{numOfLikes}</p>}
               </div>
 
               <div className="flex gap-1 items-center">
-                <div
-                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
-                  onClick={handleBookmark}
+                <Tooltip
+                  title="Bookmark"
+                  placement="top"
+                  color="white"
+                  overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
                 >
-                  <Tooltip
-                    title="Bookmark"
-                    placement="top"
-                    color="white"
-                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  <div
+                    className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                    onClick={handleBookmark}
                   >
                     {isBookmarked ? (
                       <PiBookmarkSimpleFill size={25} />
                     ) : (
                       <PiBookmarkSimple size={25} />
                     )}
-                  </Tooltip>
-                </div>
+                  </div>
+                </Tooltip>
               </div>
               <div className="flex gap-1 items-center">
-                <div
-                  className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
-                  onClick={() => {}}
+                <Tooltip
+                  title="Share"
+                  placement="top"
+                  color="white"
+                  overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
                 >
-                  <Tooltip
-                    title="Share"
-                    placement="top"
-                    color="white"
-                    overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
+                  <div
+                    className="hover:bg-gray transition-colors duration-300 rounded-md flex justify-center p-1  cursor-pointer"
+                    onClick={handleShare}
                   >
                     <PiShareFat size={25} />
-                  </Tooltip>
-                </div>
+                  </div>
+                </Tooltip>
               </div>
             </div>
           </div>

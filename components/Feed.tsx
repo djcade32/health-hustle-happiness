@@ -6,11 +6,13 @@ import { Article, GetArticlesType, GlobalFiltersType } from "@/types";
 import { getArticles } from "@/lib/actions";
 import { useAppContext } from "@/context/AppContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { Spin } from "antd";
+import { Modal, Spin } from "antd";
 import { BsFilePost } from "react-icons/bs";
+import { tabs } from "@/enums";
+import ShareModal from "./ShareModal";
 
 const Feed = () => {
-  const { globalFilters, user } = useAppContext();
+  const { globalFilters, user, setShowShareModal, showShareModal } = useAppContext();
   const [articles, setArticles] = useState<Article[]>([]);
   const [lastArticle, setLastArticle] = useState<QueryDocumentSnapshot<
     DocumentData,
@@ -20,6 +22,8 @@ const Feed = () => {
   const [loadingMoreArticles, setLoadingMoreArticles] = useState(false);
   const [nextPage, setNextPage] = useState(1);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const [articleToShare, setArticleToShare] = useState<Article | null>(null);
+
   const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
 
   useEffect(() => {
@@ -120,7 +124,11 @@ const Feed = () => {
             <section className="flex flex-1 max-w-fit">
               <div className="flex flex-wrap gap-8 ">
                 {articles.map((article, index) => (
-                  <ArticleCard key={index} article={article} />
+                  <ArticleCard
+                    key={index}
+                    article={article}
+                    setArticleToShare={setArticleToShare}
+                  />
                 ))}
               </div>
             </section>
@@ -134,6 +142,11 @@ const Feed = () => {
           )}
         </>
       )}
+      <ShareModal
+        isOpen={showShareModal}
+        setIsOpen={() => setShowShareModal(false)}
+        article={articleToShare}
+      />
     </>
   );
 };

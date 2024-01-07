@@ -49,6 +49,9 @@ type AppContextType = {
   likeArticle: (articleId: string, action: string) => void;
   bookmarkArticle: (articleId: string, action: string) => void;
   incrementNumViews: (articleId: string) => void;
+  addUserToRecentlyViewed: (articleId: string) => void;
+  showShareModal: boolean;
+  setShowShareModal: (show: boolean) => void;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -65,6 +68,7 @@ export const AppContextProvider = ({ children }: any) => {
   });
   const [selectedTab, setSelectedTab] = useState<string>("All");
   const [showOnboardingModal, setShowOnboardingModal] = useState<boolean>(false);
+  const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
@@ -130,6 +134,9 @@ export const AppContextProvider = ({ children }: any) => {
         break;
       case tabs.POPULAR:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.POPULAR });
+        break;
+      case tabs.RECENTLY_VIEWED:
+        setGlobalFilters({ otherFilters: [], tabFilter: filters.RECENTLY_VIEWED });
         break;
       default:
         setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
@@ -365,6 +372,25 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  const addUserToRecentlyViewed = async (articleId: string) => {
+    if (!db || !user)
+      return console.log("ERROR: There was a problem adding article to recently viewed.");
+    try {
+      const createQuery = query(collection(db, "articles"), where("id", "==", articleId));
+      const querySnapshot = await getDocs(createQuery);
+      querySnapshot.forEach(async (doc) => {
+        if (doc.data().recentlyViewedUsers.includes(user.id)) return;
+        await updateDoc(doc.ref, {
+          ...doc.data(),
+          recentlyViewedUsers: [...doc.data().recentlyViewedUsers, user.id],
+        });
+      });
+      console.log(`User ${user.id} added to recently viewed of article ${articleId}`);
+    } catch (error) {
+      console.log("ERROR: There was a problem adding article to recently viewed: ", error);
+    }
+  };
+
   const getRankingMultiplier = (article: any) => {
     const multiplier = (1 / calculateDaysBetweenDates(article.date, Date.now())) * 100;
     console.log("Multiplier: ", multiplier);
@@ -393,6 +419,9 @@ export const AppContextProvider = ({ children }: any) => {
         likeArticle,
         bookmarkArticle,
         incrementNumViews,
+        addUserToRecentlyViewed,
+        showShareModal,
+        setShowShareModal,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

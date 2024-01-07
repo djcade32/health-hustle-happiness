@@ -12,24 +12,34 @@ const LoginForms = ({ onSubmit, setIsForgotPasswordShowing, loading }: Props) =>
   return (
     <>
       <Form.Item name="email" rules={[{ required: true, message: "Please input your Email!" }]}>
-        <Input size="large" type="email" prefix={<MdOutlineEmail />} placeholder="Email" />
+        <Input
+          size="large"
+          type="email"
+          prefix={<MdOutlineEmail />}
+          placeholder="Email"
+          styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+          className="input-style "
+        />
       </Form.Item>
       <Form.Item
         name="password"
         rules={[{ required: true, message: "Please input your Password!" }]}
       >
         <Input.Password
-          className="mt-2"
           size="large"
           placeholder="Password"
           prefix={<MdLockOutline />}
           onPressEnter={onSubmit}
+          styles={{
+            input: { backgroundColor: "transparent", color: "#f2f2f2" },
+          }}
+          className="input-style mt-2"
         />
       </Form.Item>
       <Form.Item>
         <div className="flex justify-between items-center">
           <p
-            className=" cursor-pointer underline text-gray hover:text-primary hover:no-underline"
+            className=" cursor-pointer underline text-gray hover:text-white hover:no-underline"
             onClick={() => setIsForgotPasswordShowing(true)}
           >
             Forgot password?

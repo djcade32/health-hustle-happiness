@@ -101,7 +101,7 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
       {globalFilters.tabFilter === filters.BOOKMARKS && !isBookmarked ? (
         <></>
       ) : (
-        <div className="group flex flex-col justify-between bg-primary-light h-[415px] rounded-xl w-[300px] pt-5 pb-2 px-2 border-[1px] border-gray  hover:border-[#D3E3FD] transition-all duration-300 group-hover:opacity-0">
+        <div className="group flex flex-col justify-between bg-primary-light h-[415px] rounded-xl w-[300px] pt-5 pb-2 px-2 border-[1px] border-gray  hover:border-[#D3E3FD] transition-all duration-300 group-hover:opacity-0 max-[320px]:w-[270px] ">
           <div className="mx-3">
             <div className="flex justify-between">
               <Tooltip

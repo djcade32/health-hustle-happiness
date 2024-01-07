@@ -52,6 +52,8 @@ type AppContextType = {
   addUserToRecentlyViewed: (articleId: string) => void;
   showShareModal: boolean;
   setShowShareModal: (show: boolean) => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: any;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -422,6 +424,8 @@ export const AppContextProvider = ({ children }: any) => {
         addUserToRecentlyViewed,
         showShareModal,
         setShowShareModal,
+        isSidebarOpen,
+        setIsSidebarOpen,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

@@ -60,7 +60,7 @@ const ForgotPasswordForms = ({ setIsForgotPasswordShowing }: Props) => {
               </p>
               <Button
                 htmlType="submit"
-                className="w-[40%] bg-accent hover:opacity-75 transition-opacity duration-300"
+                className="bg-accent hover:opacity-75 transition-opacity duration-300"
                 size="large"
                 loading={false}
                 style={{ color: "white", fontWeight: 500, border: "none" }}

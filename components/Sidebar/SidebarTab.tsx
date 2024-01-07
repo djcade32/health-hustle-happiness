@@ -20,7 +20,7 @@ const SidebarTab = ({ title, icon, onClick, showSelected = true }: Props) => {
   return (
     <li
       onClick={onClick}
-      className={`flex items-center gap-2 cursor-pointer pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white transition-colors duration-300 ${checkIsSelected()}`}
+      className={`flex items-center gap-2 cursor-pointer max-[1020px]:pl-3 pl-2 py-2 text-[#D3E3FD] hover:bg-primary-light hover:text-white transition-colors duration-300 ${checkIsSelected()}`}
     >
       <div>{icon}</div>
       <p>{title}</p>

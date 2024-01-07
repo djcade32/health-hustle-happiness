@@ -14,7 +14,7 @@ export default function Home() {
       <main className="flex flex-row ">
         <Sidebar />
         {/* <main className="flex flex-1 ml-[350px] mr-[100px] pt-[50px] debug-1"> */}
-        <main className="flex flex-1 ml-[250px] justify-center pt-5">
+        <main className="flex flex-1 min-[1020px]:ml-[250px] justify-center pt-5">
           <Feed />
         </main>
       </main>

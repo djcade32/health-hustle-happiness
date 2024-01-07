@@ -150,7 +150,6 @@ export async function getArticles(
       });
     }
     if (filter === filters.POPULAR) {
-      //ToDo: Add logic to take into account date article is added
       orderByField = "ranking";
     }
     // Build necessary query to get articles

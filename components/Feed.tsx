@@ -33,7 +33,6 @@ const Feed = () => {
 
   //Fetch articles on load and tab change
   useEffect(() => {
-    //TODO: Add removed property to Article type
     const fetchArticles = async () => {
       console.log("fetching articles");
       scrollToTop();
@@ -122,7 +121,7 @@ const Feed = () => {
         <>
           {articles.length > 0 ? (
             <section className="flex w-full justify-center">
-              <div className="grid grid-cols-4 gap-8 max-[1560px]:grid-cols-3 max-[1230px]:grid-cols-2 max-[890px]:grid-cols-1 min-[2150px]:grid-cols-5">
+              <div className="grid grid-cols-4 gap-8 max-[1560px]:grid-cols-3 max-[1230px]:grid-cols-2  max-[670px]:grid-cols-1 min-[2150px]:grid-cols-5 ">
                 {articles.map((article, index) => (
                   <ArticleCard
                     key={index}

@@ -121,8 +121,8 @@ const Feed = () => {
       ) : (
         <>
           {articles.length > 0 ? (
-            <section className="flex flex-1 max-w-fit">
-              <div className="flex flex-wrap gap-8 ">
+            <section className="flex w-full justify-center">
+              <div className="grid grid-cols-4 gap-8 max-[1560px]:grid-cols-3 max-[1230px]:grid-cols-2 max-[890px]:grid-cols-1 min-[2150px]:grid-cols-5">
                 {articles.map((article, index) => (
                   <ArticleCard
                     key={index}

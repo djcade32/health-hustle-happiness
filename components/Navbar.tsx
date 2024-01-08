@@ -8,26 +8,14 @@ import LoginSignupButton from "./OnboardingModal/LoginSignupButton";
 import { useAppContext } from "@/context/AppContext";
 import UserAvatar from "./UserAvatar";
 import { IoMenuOutline } from "react-icons/io5";
+import AnimatedText from "./AnimatedText";
 
 const Navbar = () => {
-  const { user, setIsSidebarOpen, isSidebarOpen } = useAppContext();
-  const [removeloginButton, setRemoveloginButton] = useState(false);
+  const { user, setIsSidebarOpen } = useAppContext();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1020) {
-        setRemoveloginButton(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, [window.innerWidth]);
 
   return (
     <header className="px-3 py-5 border-b-[.5px] max-[1020px]:justify-center border-gray sticky top-0 left-0 w-full bg-primary z-[5] font-thin flex items-center justify-between">
@@ -39,13 +27,18 @@ const Navbar = () => {
       </div>
       <Link
         href="/"
-        className="flex gap-3 max-w-fit max-[670px]:gap-1"
+        className="flex gap-2 max-w-fit max-[670px]:gap-1"
         scroll={false}
         onClick={scrollToTop}
       >
         <Image src={logo} width={50} height={50} alt="health hustle happiness logo" />
         <p className="self-center subtitle-text text-[#D3E3FD] max-[670px]:text-[18px] max-[670px]:hidden">
-          Health Hustle Happiness
+          <span className="font-bold text-white">H</span>
+          <AnimatedText word="ealth" />
+          <span className="font-bold text-white">H</span>
+          <AnimatedText word="ustle" />
+          <span className="font-bold text-white">H</span>
+          <AnimatedText word="appiness" />
         </p>
       </Link>
       <div className="max-[1020px]:hidden">

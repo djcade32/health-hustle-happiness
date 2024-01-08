@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { IoFitnessOutline } from "react-icons/io5";
 import { GoInfinity } from "react-icons/go";
 import SidebarTab from "./SidebarTab";
@@ -8,7 +8,7 @@ import { MdLogout, MdOutlineFeedback } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
 import { PiBookmarkSimple, PiMoneyLight, PiBrainLight, PiHandHeart } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
-import { IoHeartOutline, IoEyeOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { IoHeartOutline, IoEyeOutline, IoInformationCircleOutline } from "react-icons/io5";
 import { Drawer } from "antd";
 import UserAvatar from "../UserAvatar";
 import LoginSignupButton from "../OnboardingModal/LoginSignupButton";
@@ -31,7 +31,7 @@ const Sidebar = () => {
     user,
     isSidebarOpen,
     setIsSidebarOpen,
-    setShowOnboardingModal,
+    setShowAboutUsModal,
   } = useAppContext();
 
   const handleFeedbackClick = () => {
@@ -41,8 +41,6 @@ const Sidebar = () => {
   const handleSupportCreatorClick = () => {
     window.open("https://bmc.link/normancade", "_blank");
   };
-
-  //TODO: close sidebar when window is resized to not need it
 
   useEffect(() => {
     const handleResize = () => {
@@ -148,16 +146,16 @@ const Sidebar = () => {
                   onClick={handleFeedbackClick}
                 />
                 <SidebarTab
-                  key={"tell_a_friend"}
-                  title="Tell a Friend"
-                  icon={<IoChatbubbleEllipsesOutline {...iconProps} />}
-                  onClick={() => {}}
-                />
-                <SidebarTab
                   key={"support_creator"}
                   title="Support Creator"
                   icon={<PiHandHeart {...iconProps} />}
                   onClick={handleSupportCreatorClick}
+                />
+                <SidebarTab
+                  key={"about_us"}
+                  title="About Us"
+                  icon={<IoInformationCircleOutline {...iconProps} />}
+                  onClick={() => setShowAboutUsModal(true)}
                 />
               </ul>
               {user && (
@@ -254,16 +252,16 @@ const Sidebar = () => {
               onClick={handleFeedbackClick}
             />
             <SidebarTab
-              key={"tell_a_friend"}
-              title="Tell a Friend"
-              icon={<IoChatbubbleEllipsesOutline {...iconProps} />}
-              onClick={() => {}}
-            />
-            <SidebarTab
               key={"support_creator"}
               title="Support Creator"
               icon={<PiHandHeart {...iconProps} />}
               onClick={handleSupportCreatorClick}
+            />
+            <SidebarTab
+              key={"about_us"}
+              title="About Us"
+              icon={<IoInformationCircleOutline {...iconProps} />}
+              onClick={() => setShowAboutUsModal(true)}
             />
           </ul>
           {user && (

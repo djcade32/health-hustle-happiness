@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <StyledComponentsRegistry>
         <ConfigProvider theme={theme}>
-          <body className={poppins.className}>{children}</body>
+          <body className={`${poppins.className} custom-scrollbar`}>{children}</body>
         </ConfigProvider>
       </StyledComponentsRegistry>
     </html>

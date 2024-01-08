@@ -2,24 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
-import { Article, GetArticlesType, GlobalFiltersType } from "@/types";
+import { Article, GetArticlesType } from "@/types";
 import { getArticles } from "@/lib/actions";
 import { useAppContext } from "@/context/AppContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { Spin } from "antd";
 import { BsFilePost } from "react-icons/bs";
 import ShareModal from "./ShareModal";
-import OnboardingModal from "./OnboardingModal";
 
 const Feed = () => {
-  const {
-    globalFilters,
-    user,
-    setShowShareModal,
-    showShareModal,
-    setShowOnboardingModal,
-    showOnboardingModal,
-  } = useAppContext();
+  const { globalFilters, user, setShowShareModal, showShareModal } = useAppContext();
   const [articles, setArticles] = useState<Article[]>([]);
   const [lastArticle, setLastArticle] = useState<QueryDocumentSnapshot<
     DocumentData,
@@ -31,6 +23,7 @@ const Feed = () => {
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [articleToShare, setArticleToShare] = useState<Article | null>(null);
 
+  //TODO: Look into how this is being calculated
   const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
 
   useEffect(() => {

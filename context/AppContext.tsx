@@ -54,6 +54,8 @@ type AppContextType = {
   setShowShareModal: (show: boolean) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: any;
+  setShowAboutUsModal: (show: boolean) => void;
+  showAboutUsModal: boolean;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
@@ -71,6 +73,7 @@ export const AppContextProvider = ({ children }: any) => {
   const [selectedTab, setSelectedTab] = useState<string>("All");
   const [showOnboardingModal, setShowOnboardingModal] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
+  const [showAboutUsModal, setShowAboutUsModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
@@ -426,6 +429,8 @@ export const AppContextProvider = ({ children }: any) => {
         setShowShareModal,
         isSidebarOpen,
         setIsSidebarOpen,
+        setShowAboutUsModal,
+        showAboutUsModal,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

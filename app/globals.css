@@ -32,6 +32,31 @@
   color: #f2f2f2;
 }
 
+.custom-scrollbar {
+  /* Add a custom style to change the scrollbar color */
+  /* scrollbar-width: thin; Firefox */
+  /* scrollbar-color: hsl(215, 24%, 67%, 0.4) red; Change these colors to your desired scrollbar and track colors */
+
+  /* WebKit (Chrome, Safari, and newer versions of Edge) */
+  &::-webkit-scrollbar {
+    width: 8px;
+    opacity: 0.5;
+
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color:hsl(215, 24%, 67%);
+    border-radius: 6px;
+    opacity: 0.5;
+
+  }
+
+  &::-webkit-scrollbar-track {
+    opacity: 0.5;
+
+  }
+}
+
 @layer base {
   body {
     @apply font-poppins;

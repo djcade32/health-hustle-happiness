@@ -39,7 +39,7 @@ const ForgotPasswordForms = ({ setIsForgotPasswordShowing }: Props) => {
           </p>
         </div>
       ) : (
-        <Form autoComplete="off" name="normal_login" onFinish={onSubmit}>
+        <Form autoComplete="off" onFinish={onSubmit}>
           <Form.Item name="email" rules={[{ required: true, message: "Please input your Email!" }]}>
             <Input
               size="large"

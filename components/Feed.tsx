@@ -6,13 +6,20 @@ import { Article, GetArticlesType, GlobalFiltersType } from "@/types";
 import { getArticles } from "@/lib/actions";
 import { useAppContext } from "@/context/AppContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { Modal, Spin } from "antd";
+import { Spin } from "antd";
 import { BsFilePost } from "react-icons/bs";
-import { tabs } from "@/enums";
 import ShareModal from "./ShareModal";
+import OnboardingModal from "./OnboardingModal";
 
 const Feed = () => {
-  const { globalFilters, user, setShowShareModal, showShareModal } = useAppContext();
+  const {
+    globalFilters,
+    user,
+    setShowShareModal,
+    showShareModal,
+    setShowOnboardingModal,
+    showOnboardingModal,
+  } = useAppContext();
   const [articles, setArticles] = useState<Article[]>([]);
   const [lastArticle, setLastArticle] = useState<QueryDocumentSnapshot<
     DocumentData,

@@ -1,5 +1,6 @@
 import Feed from "@/components/Feed";
 import Navbar from "@/components/Navbar";
+import OnboardingModal from "@/components/OnboardingModal";
 import Sidebar from "@/components/Sidebar";
 import AppContextProvider from "@/context/AppContext";
 import { scrapeAndStoreArticles, updateArticles } from "@/lib/actions";
@@ -18,6 +19,7 @@ export default function Home() {
           <Feed />
         </main>
       </main>
+      <OnboardingModal />
     </AppContextProvider>
   );
 }

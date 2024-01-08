@@ -8,7 +8,7 @@ import { MdLogout, MdOutlineFeedback } from "react-icons/md";
 import { useAppContext } from "@/context/AppContext";
 import { PiBookmarkSimple, PiMoneyLight, PiBrainLight, PiHandHeart } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
-import { IoHeartOutline, IoEyeOutline } from "react-icons/io5";
+import { IoHeartOutline, IoEyeOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { Drawer } from "antd";
 import UserAvatar from "../UserAvatar";
 import LoginSignupButton from "../OnboardingModal/LoginSignupButton";
@@ -25,7 +25,14 @@ const categories = [
 ];
 
 const Sidebar = () => {
-  const { setSelectedTab, signUserOut, user, isSidebarOpen, setIsSidebarOpen } = useAppContext();
+  const {
+    setSelectedTab,
+    signUserOut,
+    user,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    setShowOnboardingModal,
+  } = useAppContext();
 
   const handleFeedbackClick = () => {
     window.open("https://forms.gle/YRVqQKpNqBzZky9H8", "_blank");
@@ -63,7 +70,7 @@ const Sidebar = () => {
           mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" },
         }}
       >
-        <div className="h-full flex flex-col py-10 ">
+        <div className="h-full flex flex-col py-5">
           <div className="mb-2 h-[45px]">
             {user ? (
               <div className="pl-3 ">
@@ -139,6 +146,12 @@ const Sidebar = () => {
                   title="Feedback"
                   icon={<MdOutlineFeedback {...iconProps} />}
                   onClick={handleFeedbackClick}
+                />
+                <SidebarTab
+                  key={"tell_a_friend"}
+                  title="Tell a Friend"
+                  icon={<IoChatbubbleEllipsesOutline {...iconProps} />}
+                  onClick={() => {}}
                 />
                 <SidebarTab
                   key={"support_creator"}
@@ -239,6 +252,12 @@ const Sidebar = () => {
               title="Feedback"
               icon={<MdOutlineFeedback {...iconProps} />}
               onClick={handleFeedbackClick}
+            />
+            <SidebarTab
+              key={"tell_a_friend"}
+              title="Tell a Friend"
+              icon={<IoChatbubbleEllipsesOutline {...iconProps} />}
+              onClick={() => {}}
             />
             <SidebarTab
               key={"support_creator"}

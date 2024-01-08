@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Article } from "@/types";
 import { convertSnakeCaseToTitleCase, formatArticleCardDate } from "@/utils";
-import { Modal, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { PiBookmarkSimple, PiBookmarkSimpleFill } from "react-icons/pi";
 import { MdOpenInNew } from "react-icons/md";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
@@ -77,23 +77,9 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
   const handleShare = () => {
     if (!user) return setShowOnboardingModal(true);
 
-    // navigator.clipboard.writeText(article.link);
     console.log("Sharing article");
     setShowShareModal(true);
     setArticleToShare(article);
-    // const textToShare = "Check out this awesome content!";
-    // const imageUrl = article.image;
-
-    // // Twitter Web Intent URL
-    // // const twitterIntentUrl = "https://www.reddit.com/submit?url=" + encodeURIComponent(textToShare);
-    // const twitterIntentUrl =
-    //   "https://twitter.com/intent/tweet?text=" +
-    //   encodeURIComponent(textToShare) +
-    //   "&url=" +
-    //   encodeURIComponent(imageUrl);
-
-    // // Open a new window with the Twitter intent URL
-    // window.open(twitterIntentUrl, "_blank");
   };
 
   return (

@@ -34,7 +34,7 @@ const page = () => {
               <p>or</p>
               <div className="bg-gray w-full h-[1px]" />
             </div>
-            <Form name="normal_login" onFinish={onFinish}>
+            <Form onFinish={onFinish}>
               <Form.Item
                 name="email"
                 rules={[{ required: true, message: "Please input your Email!" }]}

@@ -15,7 +15,6 @@ const LoginSignupButton = () => {
       >
         <p className="text-center">Log in | Sign up</p>
       </div>
-      <OnboardingModal isOpen={showOnboardingModal} setIsOpen={setShowOnboardingModal} />
     </>
   );
 };

@@ -8,12 +8,7 @@ import SignupForms from "./SignupForms";
 import { useAppContext } from "@/context/AppContext";
 import ForgotPasswordForms from "./ForgotPasswordForms";
 
-interface Props {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
-
-const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
+const OnboardingModal = () => {
   const {
     createAccount,
     signUserIn,
@@ -21,6 +16,8 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
     signInWithGoogle,
     sendVerificationEmail,
     auth,
+    setShowOnboardingModal,
+    showOnboardingModal,
   } = useAppContext();
   const [isSignupShowing, setIsSignupShowing] = useState(false);
   const [isForgotPasswordShowing, setIsForgotPasswordShowing] = useState(false);
@@ -30,7 +27,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   const [form] = Form.useForm();
 
   const handleModalClose = () => {
-    setIsOpen(false);
+    setShowOnboardingModal(false);
     setIsSignupShowing(false);
     setIsForgotPasswordShowing(false);
     setFormError(null);
@@ -38,7 +35,6 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
   };
 
   const onSubmit = async (values: any) => {
-    console.log("onSubmit eing ran");
     setLoading(true);
     try {
       if (isSignupShowing) {
@@ -104,7 +100,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
       return <ForgotPasswordForms setIsForgotPasswordShowing={setIsForgotPasswordShowing} />;
     } else {
       return (
-        <Form form={form} autoComplete="off" name="normal_login" onFinish={onSubmit}>
+        <Form form={form} autoComplete="off" onFinish={onSubmit}>
           {!isSignupShowing ? (
             <LoginForms
               onSubmit={onSubmit}
@@ -136,7 +132,7 @@ const OnboardingModal = ({ isOpen, setIsOpen }: Props) => {
     <Modal
       title={getTitle()}
       centered
-      open={isOpen}
+      open={showOnboardingModal}
       onCancel={handleModalClose}
       width={500}
       footer={null}

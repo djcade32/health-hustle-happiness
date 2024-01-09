@@ -3,22 +3,7 @@
 import { Article } from "@/types";
 import { Page } from "puppeteer";
 import { Cluster } from "puppeteer-cluster";
-
-// BrightData proxy configuration
-const username = String(process.env.BRIGHT_DATA_USERNAME);
-const password = String(process.env.BRIGHT_DATA_PASSWORD);
-const port = 22225;
-const session_id = (1000000 * Math.random()) | 0;
-
-const options = {
-  auth: {
-    username: `${username}-session-${session_id}`,
-    password,
-  },
-  host: "brd.superproxy.io",
-  port,
-  rejectUnauthorized: false,
-};
+import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 
 const SCRAPERS = [
   {
@@ -59,13 +44,11 @@ const SCRAPERS = [
   },
 ];
 
-export async function runScrapers() {
-  console.time("scrapeTimer");
-
+export async function runScrapers(): Promise<Article[]> {
   console.log("INFO: Starting to scrape all websites");
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_CONTEXT,
-    maxConcurrency: 2,
+    maxConcurrency: 4,
     puppeteerOptions: {
       headless: "new",
     },
@@ -75,14 +58,53 @@ export async function runScrapers() {
     console.log(`Error crawling ${data}: ${err.message}`);
   });
 
-  SCRAPERS.forEach((scraper) => {
-    cluster.queue(scraper.website, scraper.scrapeFunction);
+  const allArticles: Article[] = [];
+  const scrapersToRetry: { website: string; scrapeFunction: TaskFunction<any, any> }[] = [];
+
+  // Run all scrapers
+  SCRAPERS.forEach(async (scraper) => {
+    try {
+      const scrapedWebsiteArticles = await cluster.execute(scraper.website, scraper.scrapeFunction);
+      if (!scrapedWebsiteArticles) return;
+      console.log(
+        `INFO: Finished scraping ${scraper.website}, retrieved: `,
+        scrapedWebsiteArticles.length
+      );
+      allArticles.push(...scrapedWebsiteArticles);
+    } catch (error: any) {
+      console.log("error code: ", error.code);
+      console.log(`Error scraping ${scraper.website}: ${error.message}`);
+      if (error.message === "Navigation timeout of 30000 ms exceeded") {
+        scrapersToRetry.push(scraper);
+      }
+    }
   });
+
+  // Retry scrapers that timed out
+  if (scrapersToRetry.length > 0) {
+    console.log("INFO: Retrying scrapers: ", scrapersToRetry);
+    scrapersToRetry.forEach(async (scraper) => {
+      try {
+        const scrapedWebsiteArticles = await cluster.execute(
+          scraper.website,
+          scraper.scrapeFunction
+        );
+        if (!scrapedWebsiteArticles) return;
+        console.log(
+          `INFO: Finished scraping ${scraper.website}, retrieved: `,
+          scrapedWebsiteArticles.length
+        );
+        allArticles.push(...scrapedWebsiteArticles);
+      } catch (error: any) {
+        console.log(`Error scraping on retry${scraper.website}: ${error.message}`);
+      }
+    });
+  }
 
   await cluster.idle();
   await cluster.close();
-  console.timeEnd("scrapeTimer");
-  console.log("INFO: Finished scraping all websites");
+  console.log("INFO: Finished scraping all websites, retrieved: ", allArticles.length);
+  return allArticles;
 }
 
 type Props = {
@@ -90,7 +112,7 @@ type Props = {
   data: string;
 };
 
-async function scrapeYahooFinance({ page, data: url }: Props) {
+async function scrapeYahooFinance({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape yahoo finance");
   await page.goto(url, { waitUntil: "load" });
 
@@ -126,10 +148,10 @@ async function scrapeYahooFinance({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeNerdWallet({ page, data: url }: Props) {
+async function scrapeNerdWallet({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape nerd wallet");
   await page.goto(url, { waitUntil: "load" });
 
@@ -165,10 +187,10 @@ async function scrapeNerdWallet({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapePennyHoarder({ page, data: url }: Props) {
+async function scrapePennyHoarder({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape penny hoarder");
   await page.goto(url, { waitUntil: "load" });
 
@@ -215,10 +237,10 @@ async function scrapePennyHoarder({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeEverydayHealth({ page, data: url }: Props) {
+async function scrapeEverydayHealth({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape everyday health");
   await page.goto(url, { waitUntil: "load" });
 
@@ -257,10 +279,10 @@ async function scrapeEverydayHealth({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeAthletechNews({ page, data: url }: Props) {
+async function scrapeAthletechNews({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape Athletech News");
   await page.goto(url, { waitUntil: "load" });
 
@@ -270,7 +292,7 @@ async function scrapeAthletechNews({ page, data: url }: Props) {
     const articles = document.querySelectorAll("div.post.style3");
     if (!articles) return;
     articles.forEach((article) => {
-      let title = article.querySelector(".post-title")?.querySelector("a")?.textContent.trim();
+      let title = article.querySelector(".post-title")?.querySelector("a")?.textContent?.trim();
       let image = article.querySelector("img")?.getAttribute("src");
       let date = Date.now();
       let link = article.querySelector("a")?.getAttribute("href");
@@ -299,10 +321,10 @@ async function scrapeAthletechNews({ page, data: url }: Props) {
     return scrapedArticles;
   });
 
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeFitAndWell({ page, data: url }: Props) {
+async function scrapeFitAndWell({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape Fit and Well");
   await page.goto(url, { waitUntil: "load" });
 
@@ -340,10 +362,10 @@ async function scrapeFitAndWell({ page, data: url }: Props) {
     return scrapedArticles;
   });
 
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeHealthline({ page, data: url }: Props) {
+async function scrapeHealthline({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape Healthline");
   await page.goto(url, { waitUntil: "load" });
 
@@ -381,10 +403,10 @@ async function scrapeHealthline({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeNewsMedical({ page, data: url }: Props) {
+async function scrapeNewsMedical({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape News Medical");
   await page.goto(url, { waitUntil: "load" });
 
@@ -461,10 +483,10 @@ async function scrapeNewsMedical({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
-async function scrapeMentalHealthFirstAid({ page, data: url }: Props) {
+async function scrapeMentalHealthFirstAid({ page, data: url }: Props): Promise<Article[]> {
   console.log("INFO: Starting to scrape Mental Health First Aid");
   await page.goto(url, { waitUntil: "load" });
 
@@ -506,7 +528,7 @@ async function scrapeMentalHealthFirstAid({ page, data: url }: Props) {
     });
     return scrapedArticles;
   });
-  return scrapedResults;
+  return scrapedResults ?? [];
 }
 
 //TODO: Add more scrapers

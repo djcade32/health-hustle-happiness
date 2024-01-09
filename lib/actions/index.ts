@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function scrapeAndStoreArticles() {
   try {
-    console.time("scrapeTimer");
+    console.time("scrapeAndStoreTimer");
     const db = getFirebaseDB();
     if (!db) return;
 
@@ -31,7 +31,9 @@ export async function scrapeAndStoreArticles() {
     if (!scrapedArticles) return;
 
     let Articles = scrapedArticles;
+    let storedArticles = 0;
     const querySnapshot = await getDocs(collection(db, "articles"));
+
     Articles.forEach(async (article) => {
       const articleId = uuidv4();
 
@@ -45,16 +47,16 @@ export async function scrapeAndStoreArticles() {
       });
       if (!foundArticle) {
         await addDoc(collection(db, "articles"), { articleId, ...article });
+        storedArticles++;
       }
     });
 
     revalidatePath("/");
-    // revalidatePath(`/products/${newProduct._id}`);
-    console.log("INFO: Scraped and stored articles");
+    console.log("INFO: Scraped and stored articles, stored articles: ", storedArticles);
   } catch (error: any) {
     throw new Error(`Failed to scrape and store articles: ${error.message}`);
   } finally {
-    console.timeEnd("scrapeTimer");
+    console.timeEnd("scrapeAndStoreTimer");
   }
 }
 

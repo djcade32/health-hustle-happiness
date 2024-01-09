@@ -101,7 +101,7 @@ const ShareModal = ({ article, isOpen, setIsOpen }: Props) => {
             key={index}
           >
             <div
-              className={`${button.bgColor} bg-gray p-1 rounded-lg hover:opacity-70 cursor-pointer flex justify-center  max-w-fit`}
+              className={`${button.bgColor} p-1 rounded-lg hover:opacity-70 cursor-pointer flex justify-center  max-w-fit`}
               onClick={() => {
                 handleShareButtonClick(button.text);
               }}

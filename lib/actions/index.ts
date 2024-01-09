@@ -1,6 +1,6 @@
 import { Article, FilterType, GetArticlesType, QueryConditionFilterType } from "@/types";
 import { getFirebaseDB } from "../firebase";
-import { scrapeMentalHealthFirstAid } from "../scrapers";
+import { runScrapers } from "../scrapers";
 import {
   DocumentData,
   Query,
@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { filters } from "@/enums";
+import { v4 as uuidv4 } from "uuid";
 
 export async function scrapeAndStoreArticles() {
   try {
@@ -25,13 +26,15 @@ export async function scrapeAndStoreArticles() {
     const db = getFirebaseDB();
     if (!db) return;
 
-    const scrapedArticles = await scrapeMentalHealthFirstAid();
+    const scrapedArticles = await runScrapers();
 
     if (!scrapedArticles) return;
 
     let Articles = scrapedArticles;
     const querySnapshot = await getDocs(collection(db, "articles"));
     Articles.forEach(async (article) => {
+      const articleId = uuidv4();
+
       let foundArticle = false;
 
       querySnapshot.forEach((doc) => {
@@ -41,7 +44,7 @@ export async function scrapeAndStoreArticles() {
         }
       });
       if (!foundArticle) {
-        await addDoc(collection(db, "articles"), article);
+        await addDoc(collection(db, "articles"), { articleId, ...article });
       }
     });
 

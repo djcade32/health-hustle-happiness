@@ -5,10 +5,12 @@ import OnboardingModal from "@/components/OnboardingModal";
 import Sidebar from "@/components/Sidebar";
 import AppContextProvider from "@/context/AppContext";
 import { scrapeAndStoreArticles, updateArticles } from "@/lib/actions";
+import { runScrapers } from "@/lib/scrapers";
 
 export default function Home() {
   // updateArticles();
   // scrapeAndStoreArticles();
+  // runScrapers();
 
   return (
     <AppContextProvider>

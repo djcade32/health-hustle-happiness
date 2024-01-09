@@ -28,7 +28,6 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
     incrementNumViews,
     addUserToRecentlyViewed,
     setShowShareModal,
-    showShareModal,
   } = useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -96,7 +95,6 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
                 color="white"
                 overlayInnerStyle={{ color: "#021525", fontSize: "12px" }}
               >
-                {/* TODO: Add placeholder image for website logo and image */}
                 <Image
                   src={article.logo}
                   alt="health hustle happiness"

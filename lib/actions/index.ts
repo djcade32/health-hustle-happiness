@@ -94,12 +94,6 @@ const buildQueryConditions = (
   return queryConditions;
 };
 
-// const buildOrderByConditions = (orderByField: string[])=> {
-//   const orderByFieldConditons: QueryOrderByConstraint[] = [];
-//   orderByFieldConditons.push(orderBy(orderByField, "desc"));
-//   return queryConditions;
-// }
-
 function buildQuery(
   limitNum: number,
   orderByField: QueryOrderByConstraint[],
@@ -156,11 +150,11 @@ export async function getArticles(
     }
     if (filter === filters.MOST_LIKED) {
       orderByField = [orderBy("numOfLikes", "desc")];
-      conditions.push({
-        field: "numOfLikes",
-        operator: ">",
-        value: 0,
-      });
+      // conditions.push({
+      //   field: "numOfLikes",
+      //   operator: ">",
+      //   value: 0,
+      // });
     }
     if (filter === filters.RECENTLY_VIEWED && userId) {
       orderByField = [orderBy("date", "desc")];

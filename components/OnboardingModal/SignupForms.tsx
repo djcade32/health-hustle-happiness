@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import React, { useEffect } from "react";
 import { MdLockOutline, MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
+import Link from "next/link";
 
 interface Props {
   onSubmit: (values: any) => void;
@@ -83,8 +84,18 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           {/* TODO: Create privacy policy and terms of service */}
           <p className="text-[12px] text-gray mt-2 max-[670px]:w-[70%]">
             By signing up I accept the{" "}
-            <a className="underline text-gray hover:text-white">Terms of Service</a> and the{" "}
-            <a className="underline text-gray hover:text-white">Privacy Policy</a>.
+            <Link href={"/tos"} target="_blank">
+              <span className="underline-offset-2 underline text-gray hover:decoration-white hover:text-white hover:no-underline">
+                Terms of Service
+              </span>
+            </Link>{" "}
+            and the{" "}
+            <Link href={"/privacyPolicy"} target="_blank">
+              <span className="underline-offset-2 underline text-gray hover:decoration-white hover:text-white hover:no-underline">
+                Privacy Policy
+              </span>
+            </Link>
+            .
           </p>
         </div>
       </Form.Item>

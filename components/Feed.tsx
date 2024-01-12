@@ -41,22 +41,7 @@ const Feed = () => {
         setLoadingInitialArticles(true);
         const articles = (await getArticles(globalFilters.tabFilter, user?.id)) as GetArticlesType;
 
-        setArticles([
-          {
-            id: "",
-            title: "Suicide Prevention Awareness Month 2023",
-            image: null,
-            date: 1705058093979,
-            link: "https://mybrainsnotbroken.com/2023/09/06/suicide-prevention-awareness-month-2023/",
-            logo: "https://mybrainsnotbroken.files.wordpress.com/2018/08/cropped-logo.jpg?w=100",
-            type: "mental_health",
-            websiteName: "My Brain's Not Broken",
-            ranking: 0,
-            usersLikes: [],
-            usersBookmarks: [],
-            numOfLikes: 0,
-          },
-        ]);
+        setArticles(articles.articles);
         setLastArticle(articles.lastArticle);
       } catch (error) {
         console.log("ERROR: There was a problem fetching articles ");

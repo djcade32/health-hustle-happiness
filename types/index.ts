@@ -3,8 +3,9 @@ import { DocumentData, QueryDocumentSnapshot, WhereFilterOp } from "firebase/fir
 
 export type Article = {
   id: string;
+  scrapeSessionId?: number;
   title: string;
-  image: string;
+  image: string | null;
   date: number;
   link: string;
   logo: string;

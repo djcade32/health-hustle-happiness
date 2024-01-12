@@ -10,7 +10,7 @@ import { runScrapers } from "@/lib/scrapers";
 export default function Home() {
   // updateArticles();
   // scrapeAndStoreArticles();
-  // runScrapers();
+  runScrapers();
 
   return (
     <AppContextProvider>

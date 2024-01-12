@@ -38,6 +38,33 @@ const nextConfig = {
       {
         hostname: "www.mentalhealthfirstaid.org",
       },
+      {
+        hostname: "www.mrmoneymustache.com",
+      },
+      {
+        hostname: "moneymorning.com",
+      },
+      {
+        hostname: "chuzefitness.com",
+      },
+      {
+        hostname: "www.nerdfitness.com",
+      },
+      {
+        hostname: "www.anytimefitness.com",
+      },
+      {
+        hostname: "www.nami.org",
+      },
+      {
+        hostname: "www.bphope.com",
+      },
+      {
+        hostname: "www.blurtitout.org",
+      },
+      {
+        hostname: "mybrainsnotbroken.files.wordpress.com",
+      },
     ],
   },
 };

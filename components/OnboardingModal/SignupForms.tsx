@@ -80,6 +80,7 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           >
             Sign up
           </Button>
+          {/* TODO: Create privacy policy and terms of service */}
           <p className="text-[12px] text-gray mt-2 max-[670px]:w-[70%]">
             By signing up I accept the{" "}
             <a className="underline text-gray hover:text-white">Terms of Service</a> and the{" "}

@@ -98,7 +98,7 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
                 <Image
                   src={article.logo}
                   alt="health hustle happiness"
-                  className="rounded-full w-8 h-8"
+                  className="rounded-full w-8 h-8 bg-white p-[2px]"
                   width={50}
                   height={50}
                 />
@@ -125,7 +125,11 @@ const ArticleCard = ({ article, setArticleToShare }: Props) => {
             </p>
             <div
               className="h-[175px] overflow-hidden w-full bg-cover bg-center rounded-xl"
-              style={{ backgroundImage: `url(${article.image})` }}
+              style={{
+                backgroundImage: article.image
+                  ? `url(${article.image})`
+                  : "url(/assets/images/cardImagePlaceholder.png)",
+              }}
             />
 
             <div className="flex flex-row justify-between pt-2 pb-1 px-[30px] ">

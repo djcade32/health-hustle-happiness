@@ -6,6 +6,7 @@ import {
   Query,
   QueryDocumentSnapshot,
   QueryFieldFilterConstraint,
+  QueryOrderByConstraint,
   addDoc,
   collection,
   getDocs,
@@ -31,8 +32,19 @@ export async function scrapeAndStoreArticles() {
     if (!scrapedArticles) return;
 
     let Articles = scrapedArticles;
+
     let storedArticles = 0;
     const querySnapshot = await getDocs(collection(db, "articles"));
+    const scrapeSessionIdSnapshot = (await getDocs(collection(db, "scrapeSessionID"))).docs[0];
+    let scrapeSessionId = scrapeSessionIdSnapshot.data().scrapeSessionId;
+    if (scrapeSessionIdSnapshot) {
+      scrapeSessionId = scrapeSessionId + 1;
+      await updateDoc(scrapeSessionIdSnapshot.ref, {
+        scrapeSessionId: scrapeSessionId,
+      });
+    } else {
+      return console.log("ERROR: Failed to get scrapeSessionId, Aborting scrape and store");
+    }
 
     Articles.forEach(async (article) => {
       const articleId = uuidv4();
@@ -46,7 +58,9 @@ export async function scrapeAndStoreArticles() {
         }
       });
       if (!foundArticle) {
-        await addDoc(collection(db, "articles"), { articleId, ...article });
+        article.id = articleId;
+        article.scrapeSessionId = scrapeSessionId;
+        await addDoc(collection(db, "articles"), article);
         storedArticles++;
       }
     });
@@ -80,9 +94,15 @@ const buildQueryConditions = (
   return queryConditions;
 };
 
+// const buildOrderByConditions = (orderByField: string[])=> {
+//   const orderByFieldConditons: QueryOrderByConstraint[] = [];
+//   orderByFieldConditons.push(orderBy(orderByField, "desc"));
+//   return queryConditions;
+// }
+
 function buildQuery(
   limitNum: number,
-  orderByField: string,
+  orderByField: QueryOrderByConstraint[],
   conditions?: QueryConditionFilterType[],
   startAtArticle?: any
 ): Query<DocumentData, DocumentData> | null {
@@ -90,21 +110,16 @@ function buildQuery(
   if (!db) return null;
 
   const articlesRef = collection(db, "articles");
-  let createdQuery = query(articlesRef, orderBy(orderByField, "desc"), limit(limitNum));
+  let createdQuery = query(articlesRef, ...orderByField, limit(limitNum));
 
   let queryConditions = buildQueryConditions(conditions);
   if (queryConditions.length > 0) {
-    createdQuery = query(
-      articlesRef,
-      orderBy(orderByField, "desc"),
-      limit(limitNum),
-      ...queryConditions
-    );
+    createdQuery = query(articlesRef, ...orderByField, limit(limitNum), ...queryConditions);
   }
   if (startAtArticle !== null && startAtArticle !== undefined) {
     createdQuery = query(
       articlesRef,
-      orderBy(orderByField, "desc"),
+      ...orderByField,
       limit(limitNum),
       ...queryConditions,
       startAfter(startAtArticle)
@@ -119,9 +134,10 @@ export async function getArticles(
   userId?: string,
   startAtArticle?: QueryDocumentSnapshot<DocumentData, DocumentData> | null
 ): Promise<GetArticlesType | undefined> {
+  // If needs more randomization add id to orderByField
   try {
     let limitNum = 20;
-    let orderByField = "id";
+    let orderByField = [orderBy("scrapeSessionId", "desc")];
     const conditions: QueryConditionFilterType[] = [
       {
         field: "type",
@@ -131,7 +147,7 @@ export async function getArticles(
     ];
 
     if (filter === filters.BOOKMARKS && userId) {
-      orderByField = "date";
+      orderByField = [orderBy("date", "desc")];
       conditions.push({
         field: "usersBookmarks",
         operator: "array-contains",
@@ -139,7 +155,7 @@ export async function getArticles(
       });
     }
     if (filter === filters.MOST_LIKED) {
-      orderByField = "numOfLikes";
+      orderByField = [orderBy("numOfLikes", "desc")];
       conditions.push({
         field: "numOfLikes",
         operator: ">",
@@ -147,7 +163,7 @@ export async function getArticles(
       });
     }
     if (filter === filters.RECENTLY_VIEWED && userId) {
-      orderByField = "date";
+      orderByField = [orderBy("date", "desc")];
       conditions.push({
         field: "recentlyViewedUsers",
         operator: "array-contains",
@@ -155,7 +171,7 @@ export async function getArticles(
       });
     }
     if (filter === filters.POPULAR) {
-      orderByField = "ranking";
+      orderByField = [orderBy("ranking", "desc")];
     }
     // Build necessary query to get articles
     const query = buildQuery(limitNum, orderByField, conditions, startAtArticle);
@@ -185,7 +201,7 @@ export async function updateArticles() {
     querySnapshot.forEach(async (doc) => {
       await updateDoc(doc.ref, {
         ...doc.data(),
-        recentlyViewedUsers: [],
+        scrapeSessionId: 0,
       });
       // if (doc.data().type === "Personal Finance") {
       //   await updateDoc(doc.ref, {

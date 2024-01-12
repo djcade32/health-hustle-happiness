@@ -34,6 +34,7 @@ const ShareModal = ({ article, isOpen, setIsOpen }: Props) => {
   };
 
   const handleShareButtonClick = (button: string) => {
+    // TODO: Implement share funtionality for Facebook and Linkedin
     if (!article) return;
     let textToShare = "";
     switch (button) {

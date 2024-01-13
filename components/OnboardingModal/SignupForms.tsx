@@ -1,5 +1,5 @@
 import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
+import React from "react";
 import { MdLockOutline, MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
 import Link from "next/link";
@@ -81,7 +81,6 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
           >
             Sign up
           </Button>
-          {/* TODO: Create privacy policy and terms of service */}
           <p className="text-[12px] text-gray mt-2 max-[670px]:w-[70%]">
             By signing up I accept the{" "}
             <Link href={"/tos"} target="_blank">

@@ -7,6 +7,7 @@ interface props {
 }
 
 const UserAvatar = ({ user }: props) => {
+  //TODO: Add menu for user profile
   const getAbbreviations = () => {
     const abbreviation = getFirstLetters(user.fullName);
     if (abbreviation.length > 2) {

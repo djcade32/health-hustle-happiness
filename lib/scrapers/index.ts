@@ -8,90 +8,90 @@ import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 
 const SCRAPERS = [
-  {
-    website: "https://finance.yahoo.com/topic/personal-finance/",
-    scrapeFunction: scrapeYahooFinance,
-  },
+  // {
+  //   website: "https://finance.yahoo.com/topic/personal-finance/",
+  //   scrapeFunction: scrapeYahooFinance,
+  // },
   {
     website: "https://www.nerdwallet.com/h/category/personal-finance?trk=nw_gn_6.0",
     scrapeFunction: scrapeNerdWallet,
   },
-  {
-    website: "https://www.thepennyhoarder.com/save-money/",
-    scrapeFunction: scrapePennyHoarder,
-  },
-  {
-    website: "https://www.everydayhealth.com/fitness/all-articles/",
-    scrapeFunction: scrapeEverydayHealth,
-  },
-  {
-    website: "https://athletechnews.com/category/fitness/",
-    scrapeFunction: scrapeAthletechNews,
-  },
-  {
-    website: "https://www.fitandwell.com/fitness",
-    scrapeFunction: scrapeFitAndWell,
-  },
-  {
-    website: "https://www.healthline.com/mental-health",
-    scrapeFunction: scrapeHealthline,
-  },
-  {
-    website: "https://www.news-medical.net/condition/Mental-Health",
-    scrapeFunction: scrapeNewsMedical,
-  },
-  {
-    website: "https://www.mentalhealthfirstaid.org/news-and-updates/",
-    scrapeFunction: scrapeMentalHealthFirstAid,
-  },
-  {
-    website: "https://www.financialsamurai.com/",
-    scrapeFunction: scrapeFinancialSamurai,
-  },
-  {
-    website: "https://www.moneyunder30.com/",
-    scrapeFunction: scrapeMoneyUnder30,
-  },
-  {
-    website: "https://www.mrmoneymustache.com/blog/",
-    scrapeFunction: scrapeMrMoneyMustache,
-  },
-  {
-    website: "https://moneymorning.com/",
-    scrapeFunction: scrapeMoneyMorning,
-  },
-  {
-    website: "https://breakingmuscle.com/fitness/",
-    scrapeFunction: scrapeBreakingMuscle,
-  },
-  {
-    website: "https://chuzefitness.com/blog",
-    scrapeFunction: scrapeChuzeFitness,
-  },
-  {
-    website: "https://www.nerdfitness.com/blog/",
-    scrapeFunction: scrapeNerdFitness,
-  },
-  {
-    website: "https://www.anytimefitness.com/ccc/workouts/",
-    scrapeFunction: scrapeAnytimeFitness,
-  },
-  {
-    website: "https://www.nami.org/Blogs/NAMI-Blog",
-    scrapeFunction: scrapeNami,
-  },
-  {
-    website: "https://www.bphope.com/bipolar-disorder/",
-    scrapeFunction: scrapeBphope,
-  },
-  {
-    website: "https://www.blurtitout.org/blog/",
-    scrapeFunction: scrapeBlurt,
-  },
-  {
-    website: "https://mybrainsnotbroken.com/",
-    scrapeFunction: scrapeMyBrainsNotBroken,
-  },
+  // {
+  //   website: "https://www.thepennyhoarder.com/save-money/",
+  //   scrapeFunction: scrapePennyHoarder,
+  // },
+  // {
+  //   website: "https://www.everydayhealth.com/fitness/all-articles/",
+  //   scrapeFunction: scrapeEverydayHealth,
+  // },
+  // {
+  //   website: "https://athletechnews.com/category/fitness/",
+  //   scrapeFunction: scrapeAthletechNews,
+  // },
+  // {
+  //   website: "https://www.fitandwell.com/fitness",
+  //   scrapeFunction: scrapeFitAndWell,
+  // },
+  // {
+  //   website: "https://www.healthline.com/mental-health",
+  //   scrapeFunction: scrapeHealthline,
+  // },
+  // {
+  //   website: "https://www.news-medical.net/condition/Mental-Health",
+  //   scrapeFunction: scrapeNewsMedical,
+  // },
+  // {
+  //   website: "https://www.mentalhealthfirstaid.org/news-and-updates/",
+  //   scrapeFunction: scrapeMentalHealthFirstAid,
+  // },
+  // {
+  //   website: "https://www.financialsamurai.com/",
+  //   scrapeFunction: scrapeFinancialSamurai,
+  // },
+  // {
+  //   website: "https://www.moneyunder30.com/",
+  //   scrapeFunction: scrapeMoneyUnder30,
+  // },
+  // {
+  //   website: "https://www.mrmoneymustache.com/blog/",
+  //   scrapeFunction: scrapeMrMoneyMustache,
+  // },
+  // {
+  //   website: "https://moneymorning.com/",
+  //   scrapeFunction: scrapeMoneyMorning,
+  // },
+  // {
+  //   website: "https://breakingmuscle.com/fitness/",
+  //   scrapeFunction: scrapeBreakingMuscle,
+  // },
+  // {
+  //   website: "https://chuzefitness.com/blog",
+  //   scrapeFunction: scrapeChuzeFitness,
+  // },
+  // {
+  //   website: "https://www.nerdfitness.com/blog/",
+  //   scrapeFunction: scrapeNerdFitness,
+  // },
+  // {
+  //   website: "https://www.anytimefitness.com/ccc/workouts/",
+  //   scrapeFunction: scrapeAnytimeFitness,
+  // },
+  // {
+  //   website: "https://www.nami.org/Blogs/NAMI-Blog",
+  //   scrapeFunction: scrapeNami,
+  // },
+  // {
+  //   website: "https://www.bphope.com/bipolar-disorder/",
+  //   scrapeFunction: scrapeBphope,
+  // },
+  // {
+  //   website: "https://www.blurtitout.org/blog/",
+  //   scrapeFunction: scrapeBlurt,
+  // },
+  // {
+  //   website: "https://mybrainsnotbroken.com/",
+  //   scrapeFunction: scrapeMyBrainsNotBroken,
+  // },
 ];
 
 export async function runScrapers(): Promise<Article[]> {
@@ -122,7 +122,7 @@ export async function runScrapers(): Promise<Article[]> {
           `INFO: Finished scraping ${scraper.website}, retrieved: `,
           scrapedWebsiteArticles.length
         );
-        // console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
+        console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
       } catch (error: any) {
         console.log(`Error scraping ${scraper.website}: ${error.message}`);
         if (error.message.includes("timeout")) {
@@ -182,7 +182,7 @@ async function scrapeYahooFinance({ page, data: url }: Props): Promise<Article[]
       let image = article.querySelector("img")?.getAttribute("src");
       let date = Date.now();
       let link = article.querySelector("a")?.getAttribute("href");
-      let logo = "/assets/websiteLogos/yahoo.png";
+      let logo = "https://s.yimg.com/cv/apiv2/default/20211027/logo-18-18.svg";
       let type = "personal_finance";
       if (!title || !image || !date || !link || !logo || !type) return;
       const data: Article = {
@@ -208,19 +208,19 @@ async function scrapeYahooFinance({ page, data: url }: Props): Promise<Article[]
 
 async function scrapeNerdWallet({ page, data: url }: Props): Promise<Article[]> {
   await page.goto(url, { waitUntil: "load" });
+  const lastPosition = await scrollPageToBottom(page, {});
 
   const scrapedResults = await page.evaluate(() => {
     let scrapedArticles: Article[] = [];
     //Start scraping
     const articles = document.querySelectorAll("._2wzVEH._3PPwi1");
     if (!articles) return;
-
     articles.forEach((article) => {
       let title = article.querySelector("span._2GdPcq._24b0kK.DFVVwC._1My7YX")?.textContent?.trim();
-      let image = "/assets/images/nerdwalletArticlePlaceholder.jpg";
+      let image = article.querySelector("img._3_C3La")?.getAttribute("src");
       let date = Date.now();
       let link = article.querySelector("a")?.getAttribute("href");
-      let logo = "/assets/websiteLogos/nerdwallet.png";
+      let logo = "https://www.nerdwallet.com/cdn/favicon.ico";
       let type = "personal_finance";
       if (!title || !image || !date || !link || !logo || !type) return;
       const data: Article = {
@@ -269,7 +269,7 @@ async function scrapePennyHoarder({ page, data: url }: Props): Promise<Article[]
       image = image && getImageUrlFromDataSrcSet(image);
       let date = Date.now();
       let link = article.querySelector("a")?.getAttribute("href");
-      let logo = "/assets/websiteLogos/pennyhoarder.png";
+      let logo = "https://www.thepennyhoarder.com/favicon.png";
       let type = "personal_finance";
       if (!title || !image || !date || !link || !logo || !type) return;
       const data: Article = {

@@ -24,11 +24,11 @@ const Feed = () => {
   const [articleToShare, setArticleToShare] = useState<Article | null>(null);
 
   //TODO: Look into how this is being calculated
-  const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
+  // const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    document.getElementById("content")?.addEventListener("scroll", handleScroll);
+    return () => document.getElementById("content")?.removeEventListener("scroll", handleScroll);
   }, []);
 
   //Fetch articles on load and tab change
@@ -96,10 +96,13 @@ const Feed = () => {
 
   //Determine if reached bottom of page
   const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
-      document.documentElement.scrollHeight - BOTTOM_OFFSET
-    ) {
+    const myDiv = document.getElementById("content");
+    if (!myDiv) return;
+    const BOTTOM_OFFSET = myDiv?.scrollHeight * 0.18;
+
+    const bottomReached =
+      myDiv.scrollTop + myDiv.clientHeight >= myDiv.scrollHeight - BOTTOM_OFFSET;
+    if (bottomReached) {
       setIsAtBottom(true);
       setNextPage((prev) => prev + 1);
     }
@@ -121,7 +124,7 @@ const Feed = () => {
         <>
           {articles.length > 0 ? (
             <section className="flex w-full justify-center">
-              <div className="grid grid-cols-4 gap-8 max-[1560px]:grid-cols-3 max-[1230px]:grid-cols-2  max-[670px]:grid-cols-1 min-[2150px]:grid-cols-5 ">
+              <div className="custom-scrollbar grid grid-cols-4 gap-8 max-[1560px]:grid-cols-3 max-[1230px]:grid-cols-2  max-[670px]:grid-cols-1 min-[2150px]:grid-cols-5 ">
                 {articles.map((article, index) => (
                   <ArticleCard
                     key={index}

@@ -9,9 +9,11 @@ import { useAppContext } from "@/context/AppContext";
 import { PiBookmarkSimple, PiMoneyLight, PiBrainLight, PiHandHeart } from "react-icons/pi";
 import { AiOutlineFire } from "react-icons/ai";
 import { IoHeartOutline, IoEyeOutline, IoInformationCircleOutline } from "react-icons/io5";
+import { HiOutlineUser } from "react-icons/hi2";
 import { Drawer } from "antd";
 import UserAvatar from "../UserAvatar";
 import LoginSignupButton from "../OnboardingModal/LoginSignupButton";
+import Link from "next/link";
 
 const iconProps = {
   size: 20,
@@ -32,6 +34,7 @@ const Sidebar = () => {
     isSidebarOpen,
     setIsSidebarOpen,
     setShowAboutUsModal,
+    setShowProfileScreen,
   } = useAppContext();
 
   const handleFeedbackClick = () => {
@@ -55,6 +58,8 @@ const Sidebar = () => {
   }, [window.innerWidth]);
 
   return (
+    // TODO: Add invite friends tab
+    // TODO: Change button highlight to profile tab when chosen
     <div>
       <Drawer
         closable={false}
@@ -241,9 +246,6 @@ const Sidebar = () => {
         </div>
 
         <div>
-          {/* <div className="pl-2 mb-1 mt-6">
-        <p className=" text-gray">Support</p>
-      </div> */}
           <ul className="flex flex-col ">
             <SidebarTab
               key={"feedback"}
@@ -266,13 +268,15 @@ const Sidebar = () => {
           </ul>
           {user && (
             <div>
-              <SidebarTab
-                key={"sign_out"}
-                title="Sign out"
-                icon={<MdLogout {...iconProps} />}
-                onClick={signUserOut}
-                showSelected={false}
-              />
+              <Link href={"/profile"}>
+                <SidebarTab
+                  key={"profile"}
+                  title="Profile"
+                  icon={<HiOutlineUser {...iconProps} />}
+                  onClick={() => setShowProfileScreen(true)}
+                  showSelected={false}
+                />
+              </Link>
             </div>
           )}
         </div>

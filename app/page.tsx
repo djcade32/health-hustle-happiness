@@ -1,7 +1,10 @@
 import AboutUsModal from "@/components/AboutUsModal";
+import Content from "@/components/Content";
 import Feed from "@/components/Feed";
 import Navbar from "@/components/Navbar";
 import OnboardingModal from "@/components/OnboardingModal";
+import ProfileScreen from "@/components/ProfileScreen";
+import ProfileModal from "@/components/ProfileScreen";
 import Sidebar from "@/components/Sidebar";
 import AppContextProvider from "@/context/AppContext";
 import { scrapeAndStoreArticles, updateArticles } from "@/lib/actions";
@@ -13,16 +16,22 @@ export default function Home() {
   // runScrapers();
 
   return (
-    <AppContextProvider>
-      <Navbar />
-      <main className="flex flex-row">
-        <Sidebar />
-        <main className="flex flex-1 min-[1020px]:ml-[250px] justify-center pt-5">
-          <Feed />
-        </main>
-      </main>
-      <OnboardingModal />
-      <AboutUsModal />
-    </AppContextProvider>
+    // <AppContextProvider>
+    //   <Navbar />
+    //   <main className="flex flex-row">
+    //     <Sidebar />
+    <>
+      {/* <main className="flex flex-1 min-[1020px]:ml-[250px] justify-center pt-5"> */}
+      <Content />
+      {/* </main> */}
+
+      {/* <ProfileScreen /> */}
+    </>
+
+    //   </main>
+    //   <OnboardingModal />
+    //   <AboutUsModal />
+    //   <ProfileModal />
+    // </AppContextProvider>
   );
 }

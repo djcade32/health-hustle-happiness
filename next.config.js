@@ -15,6 +15,12 @@ const nextConfig = {
         hostname: "cdn.thepennyhoarder.com",
       },
       {
+        hostname: "www.thepennyhoarder.com",
+      },
+      {
+        hostname: "www.nerdwallet.com",
+      },
+      {
         hostname: "images.everydayhealth.com",
       },
       {

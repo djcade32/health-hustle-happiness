@@ -124,11 +124,12 @@ function buildQuery(
 }
 
 export async function getArticles(
-  filter: FilterType,
+  filter: FilterType | null,
   userId?: string,
   startAtArticle?: QueryDocumentSnapshot<DocumentData, DocumentData> | null
 ): Promise<GetArticlesType | undefined> {
   // If needs more randomization add id to orderByField
+  if (!filter) return;
   try {
     let limitNum = 20;
     let orderByField = [orderBy("scrapeSessionId", "desc")];
@@ -195,7 +196,7 @@ export async function updateArticles() {
     querySnapshot.forEach(async (doc) => {
       await updateDoc(doc.ref, {
         ...doc.data(),
-        scrapeSessionId: 0,
+        recentlyViewedUsers: [],
       });
       // if (doc.data().type === "Personal Finance") {
       //   await updateDoc(doc.ref, {

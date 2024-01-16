@@ -18,7 +18,7 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
         rules={[
           {
             required: true,
-            message: "Please input your Full Name!",
+            message: "Please input your Full Name",
             whitespace: true,
           },
         ]}
@@ -35,7 +35,12 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
       <Form.Item
         name="email"
         rules={[
-          { required: true, message: "Please input your Email!", whitespace: true, type: "email" },
+          {
+            required: true,
+            message: "Please input a valid Email",
+            whitespace: true,
+            type: "email",
+          },
         ]}
       >
         <Input
@@ -53,7 +58,7 @@ const SignupForms = ({ onSubmit, loading }: Props) => {
         rules={[
           {
             required: true,
-            message: "Please input your Password!",
+            message: "Please input a password at least 6 characters long.",
             min: 6,
             whitespace: true,
           },

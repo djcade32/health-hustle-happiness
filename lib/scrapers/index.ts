@@ -198,6 +198,7 @@ async function scrapeYahooFinance({ page, data: url }: Props): Promise<Article[]
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -236,6 +237,7 @@ async function scrapeNerdWallet({ page, data: url }: Props): Promise<Article[]> 
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -285,6 +287,7 @@ async function scrapePennyHoarder({ page, data: url }: Props): Promise<Article[]
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -323,6 +326,7 @@ async function scrapeFinancialSamurai({ page, data: url }: Props): Promise<Artic
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -371,6 +375,7 @@ async function scrapeMoneyUnder30({ page, data: url }: Props): Promise<Article[]
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -409,6 +414,7 @@ async function scrapeMrMoneyMustache({ page, data: url }: Props): Promise<Articl
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -447,6 +453,7 @@ async function scrapeMoneyMorning({ page, data: url }: Props): Promise<Article[]
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -490,6 +497,7 @@ async function scrapeEverydayHealth({ page, data: url }: Props): Promise<Article
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -530,6 +538,7 @@ async function scrapeAthletechNews({ page, data: url }: Props): Promise<Article[
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -570,6 +579,7 @@ async function scrapeFitAndWell({ page, data: url }: Props): Promise<Article[]> 
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -610,6 +620,7 @@ async function scrapeBreakingMuscle({ page, data: url }: Props): Promise<Article
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -652,6 +663,7 @@ async function scrapeChuzeFitness({ page, data: url }: Props): Promise<Article[]
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -705,6 +717,7 @@ async function scrapeNerdFitness({ page, data: url }: Props): Promise<Article[]>
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -746,6 +759,7 @@ async function scrapeAnytimeFitness({ page, data: url }: Props): Promise<Article
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -788,6 +802,7 @@ async function scrapeHealthline({ page, data: url }: Props): Promise<Article[]> 
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -832,6 +847,7 @@ async function scrapeNewsMedical({ page, data: url }: Props): Promise<Article[]>
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -867,6 +883,7 @@ async function scrapeNewsMedical({ page, data: url }: Props): Promise<Article[]>
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -911,6 +928,7 @@ async function scrapeMentalHealthFirstAid({ page, data: url }: Props): Promise<A
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -958,6 +976,7 @@ async function scrapeNami({ page, data: url }: Props): Promise<Article[]> {
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     }
@@ -999,6 +1018,7 @@ async function scrapeBphope({ page, data: url }: Props): Promise<Article[]> {
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     });
@@ -1047,6 +1067,7 @@ async function scrapeBlurt({ page, data: url }: Props): Promise<Article[]> {
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     }
@@ -1092,6 +1113,7 @@ async function scrapeMyBrainsNotBroken({ page, data: url }: Props): Promise<Arti
         usersLikes: [],
         usersBookmarks: [],
         numOfLikes: 0,
+        recentlyViewedUsers: [],
       };
       scrapedArticles.push(data);
     }

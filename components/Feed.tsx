@@ -33,6 +33,7 @@ const Feed = () => {
 
   //Fetch articles on load and tab change
   useEffect(() => {
+    if (globalFilters.tabFilter === null) return;
     const fetchArticles = async () => {
       console.log("fetching articles");
       scrollToTop();

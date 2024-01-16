@@ -1,13 +1,21 @@
 "use client";
 
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, use } from "react";
 import { filters, tabs } from "@/enums";
 import { GlobalFiltersType, UserType } from "@/types";
 import {
+  Auth,
+  EmailAuthProvider,
+  FacebookAuthProvider,
   GoogleAuthProvider,
   User,
   createUserWithEmailAndPassword,
+  deleteUser,
+  getRedirectResult,
+  linkWithPopup,
+  linkWithRedirect,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -17,6 +25,7 @@ import {
 } from "firebase/auth";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -28,6 +37,7 @@ import {
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
 import { Spin } from "antd";
 import { calculateDaysBetweenDates, formatNumberToTwoDecimalPlaces } from "@/utils";
+import { useRouter, usePathname } from "next/navigation";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -36,6 +46,7 @@ type AppContextType = {
   isDarkMode: boolean;
   toggleDarkMode(): void;
   user: UserType | null;
+  setUser: (user: UserType | null) => void;
   createAccount: (email: string, password: string, fullName: string) => Promise<void>;
   signUserOut: () => void;
   signUserIn: (email: string, password: string) => Promise<string>;
@@ -43,7 +54,7 @@ type AppContextType = {
   signInWithGoogle: () => void;
   sendPasswordReset: (email: string) => Promise<void>;
   sendVerificationEmail: (currentUser: User) => Promise<void>;
-  auth: any;
+  auth: Auth | undefined;
   showOnboardingModal: boolean;
   setShowOnboardingModal: (show: boolean) => void;
   likeArticle: (articleId: string, action: string) => void;
@@ -58,12 +69,20 @@ type AppContextType = {
   showAboutUsModal: boolean;
   showProfileScreen: boolean;
   setShowProfileScreen: (show: boolean) => void;
+  updateUser: (user: UserType) => void;
+  deleteUserFromDB: (user: UserType) => Promise<boolean>;
+  handleReauthenticate: (userPassword: string) => Promise<boolean>;
+  addAnotherMethodOfAuthentication: (
+    authProviderSelected: string
+  ) => Promise<{ success: boolean; message: string }>;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
 const db = getFirebaseDB();
 
 export const AppContextProvider = ({ children }: any) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserType | null>(null);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
@@ -79,7 +98,10 @@ export const AppContextProvider = ({ children }: any) => {
   const [showProfileScreen, setShowProfileScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!auth || !db) return console.log("ERROR: There was a problem getting current user.");
+    if (!auth || !db) {
+      router.push("/dashboard");
+      return console.log("ERROR: There was a problem getting current user.");
+    }
     onAuthStateChanged(auth, async () => {
       if (!auth.currentUser?.emailVerified) {
         console.log("User is not verified.");
@@ -92,6 +114,7 @@ export const AppContextProvider = ({ children }: any) => {
           const { id, email, fullName } = docSnap.data();
           const currentUser: UserType = { id, email, fullName };
           setUser(currentUser);
+          console.log("User is logged in");
         } else {
           // Adding user to DB if they don't exist
           const { uid, email, displayName } = auth.currentUser;
@@ -102,10 +125,19 @@ export const AppContextProvider = ({ children }: any) => {
           };
           addUserToDB(user);
           setUser(user);
+          console.log("User is logged in and added to db");
         }
       }
       setLoading(false);
     });
+  }, []);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      setSelectedTab("All");
+    } else if (pathname === "/profile") {
+      setSelectedTab("Profile");
+    }
   }, []);
 
   // Set dark mode from local storage
@@ -147,7 +179,7 @@ export const AppContextProvider = ({ children }: any) => {
         setGlobalFilters({ otherFilters: [], tabFilter: filters.RECENTLY_VIEWED });
         break;
       default:
-        setGlobalFilters({ otherFilters: [], tabFilter: filters.ALL });
+        setGlobalFilters({ otherFilters: [], tabFilter: null });
         break;
     }
   }, [selectedTab]);
@@ -292,6 +324,104 @@ export const AppContextProvider = ({ children }: any) => {
     }
   };
 
+  // Update user in DB
+  const updateUser = async (user: UserType) => {
+    if (!db) return console.log("ERROR: There was a problem updating user.");
+    try {
+      const docRef = doc(db, `users/${user.id}`);
+      await updateDoc(docRef, user);
+    } catch (error) {
+      console.log("ERROR: There was a problem updating user: ", error);
+    }
+  };
+
+  // Delete user from DB
+  const deleteUserFromDB = async (user: UserType): Promise<boolean> => {
+    if (!db || !auth?.currentUser) return new Promise((resolve, reject) => reject(false));
+    try {
+      const docRef = doc(db, `users/${user.id}`);
+      await deleteDoc(docRef);
+      console.log("User deleted from DB");
+    } catch (error) {
+      console.log("ERROR: There was a problem deleting user from DB: ", error);
+      return new Promise((resolve, reject) => reject(false));
+    }
+
+    try {
+      deleteUser(auth.currentUser);
+      console.log("User deleted from authentication");
+      return new Promise((resolve, reject) => resolve(true));
+    } catch (error) {
+      console.log("ERROR: There was a problem deleting user from authentication: ", error);
+      return new Promise((resolve, reject) => reject(false));
+    }
+  };
+
+  const handleReauthenticate = async (userPassword: string): Promise<boolean> => {
+    if (!auth?.currentUser || !auth.currentUser.email) {
+      console.log("ERROR: There was a problem reauthenticating user.");
+      return new Promise((resolve) => resolve(false));
+    }
+    const credential = EmailAuthProvider.credential(auth.currentUser?.email, userPassword);
+    try {
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      return new Promise((resolve) => resolve(true));
+    } catch (error) {
+      console.log("ERROR: There was a problem reauthenticating user: ", error);
+      return new Promise((resolve) => resolve(false));
+    }
+  };
+
+  const addAnotherMethodOfAuthentication = async (
+    authProviderSelected: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const errorMessage =
+      "There was a problem adding another method of authentication. Please try again later.";
+    const successMessage = "Successfully added another method of authentication";
+
+    if (!auth?.currentUser) {
+      console.log("ERROR: There was a problem adding another method of authentication.");
+      return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
+    }
+    let authProvider = null;
+
+    switch (authProviderSelected) {
+      case "google":
+        authProvider = new GoogleAuthProvider();
+        break;
+      case "facebook":
+        authProvider = new FacebookAuthProvider();
+        break;
+      default:
+        console.log(
+          "ERROR: There was a problem adding another method of authentication: authProviderSelected is not valid."
+        );
+        return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
+    }
+
+    try {
+      const result = await linkWithPopup(auth.currentUser, authProvider);
+      if (result) {
+        console.log("Account linking success");
+        return new Promise((resolve) => resolve({ success: true, message: successMessage }));
+      } else {
+        console.log("Account linking failed");
+        return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
+      }
+    } catch (error: any) {
+      console.log("ERROR: There was a problem adding another method of authentication: ", error);
+      if (error.message.includes("auth/credential-already-in-use")) {
+        return new Promise((resolve) =>
+          resolve({
+            success: false,
+            message: "This account is already linked to another account.",
+          })
+        );
+      }
+      return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
+    }
+  };
+
   const likeArticle = async (articleId: string, action: string) => {
     if (!db || !user) return console.log("ERROR: There was a problem liking article.");
     try {
@@ -415,6 +545,7 @@ export const AppContextProvider = ({ children }: any) => {
         selectedTab,
         setSelectedTab,
         user,
+        setUser,
         createAccount,
         signUserOut,
         signUserIn,
@@ -436,6 +567,10 @@ export const AppContextProvider = ({ children }: any) => {
         showAboutUsModal,
         showProfileScreen,
         setShowProfileScreen,
+        updateUser,
+        deleteUserFromDB,
+        handleReauthenticate,
+        addAnotherMethodOfAuthentication,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

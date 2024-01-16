@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
-import "./globals.css";
+import "../globals.css";
 import StyledComponentsRegistry from "@/lib/AntdRegistry";
 import theme from "@/theme/themeConfig";
 import { ConfigProvider } from "antd";
@@ -21,19 +21,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <StyledComponentsRegistry>
-        <ConfigProvider theme={theme}>
-          <body className={`${poppins.className} flex flex-col`}>
-            <AppContextProvider>
-              <Navbar />
-              {children}
-              <OnboardingModal />
-              <AboutUsModal />
-            </AppContextProvider>
-          </body>
-        </ConfigProvider>
-      </StyledComponentsRegistry>
-    </html>
+    <main className="flex flex-row flex-1">
+      <Sidebar />
+      <div id="content" className="flex flex-1 min-[1020px]:ml-[250px] justify-center">
+        {children}
+      </div>
+    </main>
   );
 }

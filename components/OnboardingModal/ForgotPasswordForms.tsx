@@ -32,7 +32,7 @@ const ForgotPasswordForms = ({ setIsForgotPasswordShowing }: Props) => {
             minutes, check your spam folder.
           </p>
           <p
-            className="cursor-pointer underline text-gray hover:text-primary hover:no-underline mt-2"
+            className="cursor-pointer underline text-gray hover:text-white hover:no-underline"
             onClick={() => setIsForgotPasswordShowing(false)}
           >
             Back to log in

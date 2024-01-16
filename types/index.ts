@@ -14,6 +14,7 @@ export type Article = {
   ranking: number;
   usersLikes: string[];
   usersBookmarks: string[];
+  recentlyViewedUsers: string[];
   numOfLikes: number;
 };
 
@@ -45,7 +46,7 @@ export type FilterTypes = {
 };
 
 export type GlobalFiltersType = {
-  tabFilter: FilterType;
+  tabFilter: FilterType | null;
   otherFilters: FilterType[];
 };
 

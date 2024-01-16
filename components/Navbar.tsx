@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import logo from "@/public/assets/logo.png";
 import Link from "next/link";
 import LoginSignupButton from "./OnboardingModal/LoginSignupButton";
@@ -32,14 +32,14 @@ const Navbar = () => {
         onClick={scrollToTop}
       >
         <Image src={logo} width={50} height={50} alt="health hustle happiness logo" />
-        <p className="self-center subtitle-text text-[#D3E3FD] max-[670px]:text-[18px] max-[670px]:hidden">
+        <span className="self-center subtitle-text text-[#D3E3FD] max-[670px]:text-[18px] max-[670px]:hidden">
           <span className="font-bold text-white">H</span>
           <AnimatedText word="ealth" />
           <span className="font-bold text-white">H</span>
           <AnimatedText word="ustle" />
           <span className="font-bold text-white">H</span>
           <AnimatedText word="appiness" />
-        </p>
+        </span>
       </Link>
       <div className="max-[1020px]:hidden">
         {user ? <UserAvatar user={user} /> : <LoginSignupButton />}

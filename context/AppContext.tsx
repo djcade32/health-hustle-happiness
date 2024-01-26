@@ -12,6 +12,7 @@ import {
   createUserWithEmailAndPassword,
   deleteUser,
   getRedirectResult,
+  linkWithCredential,
   linkWithPopup,
   linkWithRedirect,
   onAuthStateChanged,
@@ -21,6 +22,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  unlink,
   updateProfile,
 } from "firebase/auth";
 import {
@@ -38,6 +40,7 @@ import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
 import { Spin } from "antd";
 import { calculateDaysBetweenDates, formatNumberToTwoDecimalPlaces } from "@/utils";
 import { useRouter, usePathname } from "next/navigation";
+import path from "path";
 
 type AppContextType = {
   setSelectedTab(name: string): void;
@@ -52,6 +55,8 @@ type AppContextType = {
   signUserIn: (email: string, password: string) => Promise<string>;
   createUserWithGoogle: () => void;
   signInWithGoogle: () => void;
+  createUserWithFacebook: () => void;
+  signInWithFacebook: () => void;
   sendPasswordReset: (email: string) => Promise<void>;
   sendVerificationEmail: (currentUser: User) => Promise<void>;
   auth: Auth | undefined;
@@ -75,13 +80,17 @@ type AppContextType = {
   addAnotherMethodOfAuthentication: (
     authProviderSelected: string
   ) => Promise<{ success: boolean; message: string }>;
+  unlinkAuthenticationMethod: (providerName: string) => Promise<boolean>;
+  linkEmailAndPassword: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; message: string }>;
 };
 const AppContext = createContext({} as AppContextType);
 const auth = getFirebaseAuth();
 const db = getFirebaseDB();
 
 export const AppContextProvider = ({ children }: any) => {
-  const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserType | null>(null);
@@ -98,10 +107,7 @@ export const AppContextProvider = ({ children }: any) => {
   const [showProfileScreen, setShowProfileScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!auth || !db) {
-      router.push("/dashboard");
-      return console.log("ERROR: There was a problem getting current user.");
-    }
+    if (!auth || !db) return;
     onAuthStateChanged(auth, async () => {
       if (!auth.currentUser?.emailVerified) {
         console.log("User is not verified.");
@@ -283,7 +289,7 @@ export const AppContextProvider = ({ children }: any) => {
       setUser(user);
       addUserToDB(user);
     } catch (error) {
-      console.error("Error signing in with Google: ", error);
+      console.error("Error signing up with Google: ", error);
     }
   };
 
@@ -297,6 +303,42 @@ export const AppContextProvider = ({ children }: any) => {
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
+    }
+  };
+
+  const createUserWithFacebook = async () => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to create new user with facebook auth."
+      );
+    try {
+      const provider = new FacebookAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+
+      const { uid, email, displayName } = userCredential.user;
+      const user: UserType = {
+        id: uid,
+        email: email ?? "",
+        fullName: displayName ?? "",
+      };
+
+      setUser(user);
+      addUserToDB(user);
+    } catch (error) {
+      console.error("Error signing up with Facebook: ", error);
+    }
+  };
+
+  const signInWithFacebook = async () => {
+    if (!auth)
+      return console.log(
+        "ERROR: There was a problem getting Firebase auth to sign in with Facebook."
+      );
+    try {
+      const provider = new FacebookAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Error signing in with Facebook: ", error);
     }
   };
 
@@ -377,14 +419,13 @@ export const AppContextProvider = ({ children }: any) => {
   ): Promise<{ success: boolean; message: string }> => {
     const errorMessage =
       "There was a problem adding another method of authentication. Please try again later.";
-    const successMessage = "Successfully added another method of authentication";
+    const successMessage = "Successfully linked method of authentication";
 
     if (!auth?.currentUser) {
       console.log("ERROR: There was a problem adding another method of authentication.");
       return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
     }
     let authProvider = null;
-
     switch (authProviderSelected) {
       case "google":
         authProvider = new GoogleAuthProvider();
@@ -419,6 +460,84 @@ export const AppContextProvider = ({ children }: any) => {
         );
       }
       return new Promise((resolve) => resolve({ success: false, message: errorMessage }));
+    }
+  };
+
+  const unlinkAuthenticationMethod = async (providerName: string): Promise<boolean> => {
+    if (!auth?.currentUser) {
+      console.log("ERROR: There was a problem unlinking authentication method.");
+      return new Promise((resolve) => resolve(false));
+    }
+
+    let providerId = null;
+    switch (providerName) {
+      case "google":
+        providerId = GoogleAuthProvider.PROVIDER_ID;
+        break;
+      case "facebook":
+        providerId = FacebookAuthProvider.PROVIDER_ID;
+        break;
+      default:
+        console.log(
+          "ERROR: There was a problem unlinking authentication method: providerName is not valid."
+        );
+        return new Promise((resolve) => resolve(false));
+    }
+
+    const unlinked = await unlink(auth.currentUser, providerId);
+    if (unlinked) {
+      console.log("Account unlinked successfully");
+      return new Promise((resolve) => resolve(true));
+    } else {
+      console.log("Account unlinking failed");
+      return new Promise((resolve) => resolve(false));
+    }
+  };
+
+  const linkEmailAndPassword = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; message: string }> => {
+    if (!auth?.currentUser) {
+      console.log("ERROR: There was a problem getting auth to link email and password.");
+      return new Promise((resolve) =>
+        resolve({
+          success: false,
+          message: "There was a problem linking email and password. Please try again later.",
+        })
+      );
+    }
+
+    const credential = EmailAuthProvider.credential(email, password);
+    try {
+      const result = await linkWithCredential(auth.currentUser, credential);
+      if (result) {
+        console.log("Account linking success");
+        return new Promise((resolve) =>
+          resolve({ success: true, message: "Successfully linked email and password." })
+        );
+      } else {
+        console.log("Account linking failed");
+        return new Promise((resolve) =>
+          resolve({
+            success: false,
+            message: "There was a problem linking email and password. Please try again later.",
+          })
+        );
+      }
+    } catch (error: any) {
+      console.log("ERROR: There was a problem linking email and password: ", error);
+      if (error.message.includes("auth/email-already-in-use")) {
+        return new Promise((resolve) =>
+          resolve({ success: false, message: "Email is already in use. Please try again." })
+        );
+      }
+      return new Promise((resolve) =>
+        resolve({
+          success: false,
+          message: "There was a problem linking email and password. Please try again later.",
+        })
+      );
     }
   };
 
@@ -551,6 +670,8 @@ export const AppContextProvider = ({ children }: any) => {
         signUserIn,
         createUserWithGoogle,
         signInWithGoogle,
+        createUserWithFacebook,
+        signInWithFacebook,
         sendPasswordReset,
         sendVerificationEmail,
         showOnboardingModal,
@@ -571,6 +692,8 @@ export const AppContextProvider = ({ children }: any) => {
         deleteUserFromDB,
         handleReauthenticate,
         addAnotherMethodOfAuthentication,
+        unlinkAuthenticationMethod,
+        linkEmailAndPassword,
       }}
     >
       {!loading ? children : <Spin fullscreen />}

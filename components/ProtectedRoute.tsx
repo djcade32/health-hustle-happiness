@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { user } = useAppContext();
+  const { user, setSelectedTab } = useAppContext();
   const router = useRouter();
 
   // Replace this with your authentication logic
@@ -19,6 +19,7 @@ const ProtectedRoute = ({ children }: Props) => {
     if (!isAuthenticated) {
       // Redirect the user to the login page if not authenticated
       router.push("/");
+      setSelectedTab("All");
     }
   }, [isAuthenticated]);
 

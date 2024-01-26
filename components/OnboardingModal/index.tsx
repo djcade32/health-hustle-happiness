@@ -3,6 +3,7 @@
 import { Button, Form, Modal } from "antd";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FaFacebookF } from "react-icons/fa";
 import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
 import { useAppContext } from "@/context/AppContext";
@@ -14,6 +15,8 @@ const OnboardingModal = () => {
     signUserIn,
     createUserWithGoogle,
     signInWithGoogle,
+    createUserWithFacebook,
+    signInWithFacebook,
     sendVerificationEmail,
     auth,
     setShowOnboardingModal,
@@ -93,6 +96,16 @@ const OnboardingModal = () => {
     } else {
       signInWithGoogle();
     }
+    handleModalClose();
+  };
+
+  const handleFacebookButtonClick = () => {
+    if (isSignupShowing) {
+      createUserWithFacebook();
+    } else {
+      signInWithFacebook();
+    }
+    handleModalClose();
   };
 
   const getCorrectForm = () => {
@@ -116,7 +129,7 @@ const OnboardingModal = () => {
   };
 
   const handleSendingVerificationEmail = () => {
-    if (auth.currentUser && !loading) {
+    if (auth?.currentUser && !loading) {
       setLoading(true);
       try {
         sendVerificationEmail(auth.currentUser);
@@ -171,10 +184,17 @@ const OnboardingModal = () => {
             <>
               <div
                 onClick={handleGoogleButtonClick}
-                className="border-[1px] border-gray hover:border-white text-white flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
+                className="border-[1px] border-gray transition-all duration-300 bg-white hover:opacity-75 hover:border-white text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-4"
               >
                 <FcGoogle size={25} className="mr-2" />
                 <p>Google</p>
+              </div>
+              <div
+                onClick={handleFacebookButtonClick}
+                className="border-[1px] border-gray transition-all duration-300 bg-white hover:opacity-75 hover:border-white text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
+              >
+                <FaFacebookF size={25} color="#3C5998" className="mr-2" />
+                <p>Facebook</p>
               </div>
 
               <div className="w-full flex justify-center items-center gap-2 mb-2">

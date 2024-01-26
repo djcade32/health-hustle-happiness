@@ -3,7 +3,7 @@
 import SidebarTab from "@/components/Sidebar/SidebarTab";
 import { useAppContext } from "@/context/AppContext";
 import { Button, Form, Input } from "antd";
-import React, { useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { AiOutlineProfile } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa6";
 import { MdLockOutline, MdLogout, MdOutlineEmail } from "react-icons/md";
@@ -19,18 +19,52 @@ import DeleteAccountModal from "@/components/DeleteAccountModal";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
+import { link } from "fs";
+
+const PROVIDER_LIST = [
+  { name: "Google", icon: <FcGoogle size={25} /> },
+  { name: "Facebook", icon: <FaFacebookF size={25} color="#3C5998" /> },
+];
 
 const Page = () => {
-  const { signUserOut, user, auth, updateUser, setUser, addAnotherMethodOfAuthentication } =
-    useAppContext();
+  const {
+    signUserOut,
+    user,
+    auth,
+    updateUser,
+    setUser,
+    addAnotherMethodOfAuthentication,
+    unlinkAuthenticationMethod,
+    linkEmailAndPassword,
+  } = useAppContext();
   const [loadingUpdateAccountInformation, setLoadingUpdateAccountInformation] = useState(false);
   const [loadingUpdatePassword, setLoadingUpdatePassword] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState("Account");
   const [form] = Form.useForm();
   const [changePasswordForm] = Form.useForm();
+  const [linkEmailPasswordForm] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [usedMethodsOfAuthentication, setUsedMethodsOfAuthentication] = useState<any[]>([]);
+  const [showChangePasswordSection, setShowChangePasswordSection] = useState(false);
+
+  useMemo(() => {
+    if (!user || !auth) return;
+    console.log("auth: ", auth.currentUser);
+
+    const usedProviderList: any = [];
+
+    PROVIDER_LIST.forEach((provider) => {
+      auth?.currentUser?.providerData.map((userAuthMethod) => {
+        if (userAuthMethod.providerId.includes(provider.name.toLowerCase())) {
+          usedProviderList.push(provider);
+        }
+        if (userAuthMethod.providerId.includes("password")) setShowChangePasswordSection(true);
+      });
+    });
+    setUsedMethodsOfAuthentication(usedProviderList);
+  }, [user]);
 
   const handleSignOut = () => {
     signUserOut();
@@ -147,17 +181,53 @@ const Page = () => {
     return password.length >= 6;
   };
 
-  const handleAddingAuthenticationMethod = async (provider: string) => {
-    const methodAdded = await addAnotherMethodOfAuthentication(provider);
+  const handleAddingAuthenticationMethod = async (provider: { name: string; icon: any }) => {
+    const methodAdded = await addAnotherMethodOfAuthentication(provider.name.toLowerCase());
     if (methodAdded.success) {
       messageApi.open({
         type: "success",
         content: methodAdded.message,
       });
+      setUsedMethodsOfAuthentication([...usedMethodsOfAuthentication, provider]);
     } else {
       messageApi.open({
         type: "error",
         content: methodAdded.message,
+      });
+    }
+  };
+
+  const handleUnlinkAuthenticationMethod = async (provider: string) => {
+    const methodUnlinked = await unlinkAuthenticationMethod(provider.toLowerCase());
+    if (methodUnlinked) {
+      messageApi.open({
+        type: "success",
+        content: "Successfully unlinked authentication method",
+      });
+      setUsedMethodsOfAuthentication(
+        usedMethodsOfAuthentication.filter((method) => method.name !== provider)
+      );
+    } else {
+      messageApi.open({
+        type: "error",
+        content: "Error unlinking authentication method. Please try again later.",
+      });
+    }
+  };
+
+  const handleLinkingEmailAndPassword = async () => {
+    const { email, password } = linkEmailPasswordForm.getFieldsValue();
+    const { success, message: messageContent } = await linkEmailAndPassword(email, password);
+    if (success) {
+      messageApi.open({
+        type: "success",
+        content: messageContent,
+      });
+      setShowChangePasswordSection(true);
+    } else {
+      messageApi.open({
+        type: "error",
+        content: messageContent,
       });
     }
   };
@@ -227,8 +297,9 @@ const Page = () => {
                     />
                   </Form.Item>
                   <Form.Item
+                    hidden={!user?.email}
                     name="email"
-                    rules={[{ required: true, message: "Please input your Email!" }]}
+                    rules={[{ required: true, message: "Please input a valid Email!" }]}
                   >
                     <Input
                       size="large"
@@ -261,82 +332,155 @@ const Page = () => {
                 </Form>
               </div>
               {/* Change Password section */}
-              <div>
-                <p className="subtitle-text mb-2 text-white">Change Password</p>
-                <Form
-                  name="change_password"
-                  form={changePasswordForm}
-                  autoComplete="off"
-                  onFinish={updateUserPassword}
-                  className="flex flex-col flex-1 gap-2"
-                >
-                  <Form.Item
-                    name="current_password"
-                    rules={[{ required: true, message: "Please enter your current password" }]}
+              {showChangePasswordSection && (
+                <div>
+                  <p className="subtitle-text mb-2 text-white">Change Password</p>
+                  <Form
+                    name="change_password"
+                    form={changePasswordForm}
+                    autoComplete="off"
+                    onFinish={updateUserPassword}
+                    className="flex flex-col flex-1 gap-2"
                   >
-                    <Input.Password
-                      size="large"
-                      type="password"
-                      prefix={<MdLockOutline />}
-                      placeholder="Current Password"
-                      styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
-                      className="input-style "
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name="new_password"
-                    rules={[{ required: true, message: "Please enter your new password" }]}
-                  >
-                    <Input.Password
-                      size="large"
-                      type="password"
-                      prefix={<MdLockOutline />}
-                      placeholder="New Password"
-                      styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
-                      className="input-style "
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name="Confirm Password"
-                    dependencies={["new_password"]}
-                    rules={[
-                      {
-                        required: true,
-                      },
-                      ({ getFieldValue }) => ({
-                        validator(_, value) {
-                          if (!value || getFieldValue("new_password") === value) {
-                            return Promise.resolve();
-                          }
-                          return Promise.reject(
-                            new Error("Passwords do not match. Please try again.")
-                          );
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input.Password
-                      size="large"
-                      type="password"
-                      prefix={<MdLockOutline />}
-                      placeholder="Confirm Password"
-                      styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
-                      className="input-style "
-                    />
-                  </Form.Item>
-                  <Form.Item className="flex justify-end">
-                    <Button
-                      className="bg-accent hover:opacity-75 transition-opacity duration-300"
-                      size="large"
-                      loading={loadingUpdatePassword}
-                      onClick={() => changePasswordForm.submit()}
-                      style={{ color: "white", fontWeight: 500, border: "none" }}
+                    <Form.Item
+                      name="current_password"
+                      rules={[{ required: true, message: "Please enter your current password" }]}
                     >
-                      Update Password
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
+                      <Input.Password
+                        size="large"
+                        type="password"
+                        prefix={<MdLockOutline />}
+                        placeholder="Current Password"
+                        styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+                        className="input-style "
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="new_password"
+                      rules={[{ required: true, message: "Please enter your new password" }]}
+                    >
+                      <Input.Password
+                        size="large"
+                        type="password"
+                        prefix={<MdLockOutline />}
+                        placeholder="New Password"
+                        styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+                        className="input-style "
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="Confirm Password"
+                      dependencies={["new_password"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value || getFieldValue("new_password") === value) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(
+                              new Error("Passwords do not match. Please try again.")
+                            );
+                          },
+                        }),
+                      ]}
+                    >
+                      <Input.Password
+                        size="large"
+                        type="password"
+                        prefix={<MdLockOutline />}
+                        placeholder="Confirm Password"
+                        styles={{ input: { backgroundColor: "transparent", color: "#f2f2f2" } }}
+                        className="input-style "
+                      />
+                    </Form.Item>
+                    <Form.Item className="flex justify-end">
+                      <Button
+                        className="bg-accent hover:opacity-75 transition-opacity duration-300"
+                        size="large"
+                        loading={loadingUpdatePassword}
+                        onClick={() => changePasswordForm.submit()}
+                        style={{ color: "white", fontWeight: 500, border: "none" }}
+                      >
+                        Update Password
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              )}
+              {/* Link email address and password */}
+              {!showChangePasswordSection && (
+                <div className="mb-6">
+                  <p className="subtitle-text mb-1 text-white">Link Email Address and Password</p>
+                  <p className="text-gray mb-4">
+                    Add email address and password credentials to your account.
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <Form
+                      name="link_email_password"
+                      form={linkEmailPasswordForm}
+                      autoComplete="off"
+                      onFinish={() => handleLinkingEmailAndPassword()}
+                      className="flex flex-col flex-1 gap-2"
+                    >
+                      <Form.Item
+                        name="email"
+                        rules={[{ required: true, message: "Please input a valid Email!" }]}
+                      >
+                        <Input
+                          size="large"
+                          type="text"
+                          prefix={<MdOutlineEmail />}
+                          placeholder="Email"
+                          styles={{
+                            input: {
+                              backgroundColor: "transparent",
+                              color: "#f2f2f2",
+                            },
+                          }}
+                          className="input-style"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please enter a password at least 6 characters.",
+                          },
+                        ]}
+                      >
+                        <Input
+                          size="large"
+                          type="password"
+                          prefix={<MdLockOutline />}
+                          placeholder="Password"
+                          styles={{
+                            input: {
+                              backgroundColor: "transparent",
+                              color: "#f2f2f2",
+                            },
+                          }}
+                          className="input-style"
+                        />
+                      </Form.Item>
+                      <Form.Item className="flex justify-end">
+                        <Button
+                          className="bg-accent hover:opacity-75 transition-opacity duration-300 w-[100px]"
+                          size="large"
+                          // loading={loadingUpdateAccountInformation}
+                          onClick={() => linkEmailPasswordForm.submit()}
+                          style={{ color: "white", fontWeight: 500, border: "none" }}
+                        >
+                          Link
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </div>
+                </div>
+              )}
               {/* Add another method of authentication section */}
               <div className="mb-6">
                 <p className="subtitle-text mb-1 text-white">Add Login Account</p>
@@ -345,27 +489,49 @@ const Page = () => {
                   account.
                 </p>
                 <div className="flex flex-col gap-4">
-                  <Button
-                    className=" bg-white hover:opacity-75 transition-opacity duration-300 flex gap-2 w-[250px]"
-                    size="large"
-                    onClick={() => handleAddingAuthenticationMethod("google")}
-                    style={{ color: "#021525", fontWeight: 500, border: "none" }}
-                  >
-                    <FcGoogle size={25} />
-                    Connect to Google
-                  </Button>
-                  {/* TODO: Add Facebook authentication */}
-                  <Button
-                    className=" bg-white hover:opacity-75 transition-opacity duration-300 flex gap-2 w-[250px]"
-                    size="large"
-                    onClick={() => handleAddingAuthenticationMethod("facebook")}
-                    style={{ color: "#021525", fontWeight: 500, border: "none" }}
-                  >
-                    <FaFacebookF size={25} color="#3C5998" />
-                    Connect to Facebook
-                  </Button>
+                  {PROVIDER_LIST.map(
+                    (provider) =>
+                      !usedMethodsOfAuthentication.includes(provider) && (
+                        <Button
+                          key={provider.name}
+                          className=" bg-white hover:opacity-75 transition-opacity duration-300 flex gap-2 w-[250px] items-center justify-center"
+                          size="large"
+                          onClick={() => handleAddingAuthenticationMethod(provider)}
+                          style={{ color: "#021525", fontWeight: 500, border: "none" }}
+                        >
+                          {provider.icon}
+                          Connect to {provider.name}
+                        </Button>
+                      )
+                  )}
                 </div>
               </div>
+
+              {/* Remove method of authentication section */}
+              {usedMethodsOfAuthentication.length > 0 && (
+                <div className="mb-6">
+                  <p className="subtitle-text mb-1 text-white">Connected Accounts</p>
+                  <p className="text-gray mb-4">
+                    Remove the connection between Health Hustle Happiness and authorized login
+                    providers.
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {usedMethodsOfAuthentication.map((method) => (
+                      <Button
+                        key={method.name}
+                        className=" bg-transparent transition-all duration-300 hover:bg-red-500 flex gap-2 w-[250px] items-center justify-center"
+                        size="large"
+                        onClick={() => handleUnlinkAuthenticationMethod(method.name)}
+                        style={{ color: "#f2f2f2", fontWeight: 500, border: "1px solid #f2f2f2" }}
+                      >
+                        {method.icon}
+                        Remove {method.name}
+                      </Button>
+                    ))}
+                    {/* TODO: Add logic to remove authentication method from account*/}
+                  </div>
+                </div>
+              )}
             </div>
             {/* Delete Account section */}
             <div className="border-[1px] border-red-500 rounded-lg p-4 relative w-[90%]">

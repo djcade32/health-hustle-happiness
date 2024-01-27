@@ -11,10 +11,8 @@ import {
   User,
   createUserWithEmailAndPassword,
   deleteUser,
-  getRedirectResult,
   linkWithCredential,
   linkWithPopup,
-  linkWithRedirect,
   onAuthStateChanged,
   reauthenticateWithCredential,
   sendEmailVerification,
@@ -39,8 +37,7 @@ import {
 import { getFirebaseAuth, getFirebaseDB } from "@/lib/firebase";
 import { Spin } from "antd";
 import { calculateDaysBetweenDates, formatNumberToTwoDecimalPlaces } from "@/utils";
-import { useRouter, usePathname } from "next/navigation";
-import path from "path";
+import { usePathname } from "next/navigation";
 
 type AppContextType = {
   setSelectedTab(name: string): void;

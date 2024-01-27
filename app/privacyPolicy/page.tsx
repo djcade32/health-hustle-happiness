@@ -94,8 +94,11 @@ const page = () => {
           <li className="mb-1">
             <p className="leading-7">
               <strong>Website</strong> refers to Health Hustle Happiness, accessible from{" "}
-              {/* TODO: Change URL */}
-              <a href="https://melofi.app/" rel="external nofollow noopener" target="_blank">
+              <a
+                href="https://healthhustlehappiness.com"
+                rel="external nofollow noopener"
+                target="_blank"
+              >
                 https://healthhustlehappiness.com
               </a>
             </p>
@@ -463,8 +466,7 @@ const page = () => {
       <h1 className="header-text font-bold mb-4">Contact Us</h1>
       <p>If you have any questions about this Privacy Policy, You can contact us:</p>
       <ul>
-        {/* TODO: Change email */}
-        <li>By email: welcome@melofi.app</li>
+        <li>By email: health.hustle.happiness@gmail.com</li>
       </ul>
     </div>
   );

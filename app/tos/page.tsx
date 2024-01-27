@@ -12,8 +12,7 @@ const page = () => {
         with any part of these terms and conditions, please do not use our website. The term ‘Health
         Hustle Happiness’ or ‘us’ or ‘we’ refers to the owner of the website{" "}
         <span>
-          {/* TODO: Change url to healthhustlehappiness.com */}
-          <a href="https://melofi.app/" style={{ textDecoration: "underline" }}>
+          <a href="https://healthhustlehappiness.com" style={{ textDecoration: "underline" }}>
             https://healthhustlehappiness.com
           </a>
         </span>
@@ -22,11 +21,20 @@ const page = () => {
       </p>
       <h2 className="subtitle-text font-bold mb-2 mt-4">Terms of Service</h2>
       <p className="leading-7">
-        {/* TODO: Change description */}
-        We offer a variety of products on our platform customized to meet your personal preference
-        such as choosing a Health Hustle Happiness background music loop based on your mood, you may
-        customize it with sounds by interacting with original artworks and enjoy our productivity
-        suite of tools.
+        Welcome to Health Hustle Happiness, a dedicated space where personal finance, mental health,
+        and physical fitness converge to guide you on a journey towards holistic well-being. At
+        Health Hustle Happiness, we believe that true wellness extends beyond just physical fitness
+        or financial success—it encompasses the intricate balance of mind, body, and financial
+        vitality. Our mission is to empower you with insightful articles carefully curated from
+        reputable sources, providing a wealth of knowledge to enhance your health, hustle, and
+        happiness. We adhere to the principle: "If it does not better your health, hustle, or
+        happiness, it is not for you." This ethos underscores our commitment to delivering content
+        that is not only informative but also impactful, ensuring that every piece contributes to
+        your overall well-being. Whether you are seeking financial prosperity, mental resilience, or
+        a path to personal fitness, Health Hustle Happiness is your companion on this transformative
+        journey. Join us as we explore the realms of balanced living, offering guidance and
+        inspiration to help you thrive in every facet of your life. Your well-being is our priority,
+        and we invite you to embark on this harmonious adventure with us.
       </p>
       <h2 className="subtitle-text font-bold mb-2 mt-4">User Representations</h2>
       <p className="mb-2">By using the Site, you represent and warrant that: </p>

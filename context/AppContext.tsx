@@ -44,7 +44,6 @@ type AppContextType = {
   selectedTab: string;
   globalFilters: GlobalFiltersType;
   isDarkMode: boolean;
-  toggleDarkMode(): void;
   user: UserType | null;
   setUser: (user: UserType | null) => void;
   createAccount: (email: string, password: string, fullName: string) => Promise<void>;
@@ -190,11 +189,6 @@ export const AppContextProvider = ({ children }: any) => {
         break;
     }
   }, [selectedTab]);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    localStorage.setItem("isDarkMode", !isDarkMode);
-  };
 
   const createAccount = async (
     email: string,
@@ -660,7 +654,6 @@ export const AppContextProvider = ({ children }: any) => {
       value={{
         auth,
         isDarkMode,
-        toggleDarkMode,
         globalFilters,
         selectedTab,
         setSelectedTab,

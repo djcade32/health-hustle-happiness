@@ -23,9 +23,6 @@ const Feed = () => {
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [articleToShare, setArticleToShare] = useState<Article | null>(null);
 
-  //TODO: Look into how this is being calculated
-  // const BOTTOM_OFFSET = document.documentElement.scrollHeight * 0.18;
-
   useEffect(() => {
     document.getElementById("content")?.addEventListener("scroll", handleScroll);
     return () => document.getElementById("content")?.removeEventListener("scroll", handleScroll);

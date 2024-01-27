@@ -51,8 +51,6 @@ const Page = () => {
 
   useMemo(() => {
     if (!user || !auth) return;
-    console.log("auth: ", auth.currentUser);
-
     const usedProviderList: any = [];
 
     PROVIDER_LIST.forEach((provider) => {
@@ -71,7 +69,6 @@ const Page = () => {
   };
 
   const updateAccountInformation = async (values: any) => {
-    // TODO: Allow users to add another method of authentication Google, Facebook, etc.
     if (!isEditMode) return setIsEditMode(true);
     const { fullname, email } = values;
     // If user didn't change anything, don't update
@@ -88,7 +85,6 @@ const Page = () => {
     setLoadingUpdateAccountInformation(true);
     let formError: string | null = null;
     try {
-      //TODO: Add validation for email and fullname
       if (!auth || !user) return;
       await updateEmail(auth.currentUser!, email);
       await updateProfile(auth.currentUser!, { displayName: fullname });
@@ -528,7 +524,6 @@ const Page = () => {
                         Remove {method.name}
                       </Button>
                     ))}
-                    {/* TODO: Add logic to remove authentication method from account*/}
                   </div>
                 </div>
               )}

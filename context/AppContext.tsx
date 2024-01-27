@@ -109,9 +109,13 @@ export const AppContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (!auth || !db) return;
     onAuthStateChanged(auth, async () => {
-      if (!auth.currentUser?.emailVerified) {
+      const userHasEmailAndPasswordLinked = auth.currentUser?.providerData.some(
+        (provider) => provider.providerId === "password"
+      );
+      if (!auth.currentUser?.emailVerified && userHasEmailAndPasswordLinked) {
         console.log("User is not verified.");
         setLoading(false);
+        return;
       }
       if (auth.currentUser) {
         const docRef = doc(db, `users/${auth.currentUser.uid}`);
@@ -246,6 +250,7 @@ export const AppContextProvider = ({ children }: any) => {
       const { uid, displayName, emailVerified } = userCredentials.user;
       if (!emailVerified) {
         console.log("User is not verified.");
+        sendVerificationEmail(userCredentials.user);
         return new Promise((resolve, reject) => reject("User is not verified"));
       }
       const user: UserType = {
@@ -253,7 +258,6 @@ export const AppContextProvider = ({ children }: any) => {
         email,
         fullName: displayName!,
       };
-
       setUser(user);
       addUserToDB(user);
       return new Promise((resolve) => resolve("User signed in"));

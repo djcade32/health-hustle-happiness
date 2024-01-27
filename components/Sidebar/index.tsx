@@ -59,7 +59,6 @@ const Sidebar = () => {
 
   return (
     // TODO: Add invite friends tab
-    // TODO: Change button highlight to profile tab when chosen
     <div>
       <Drawer
         closable={false}

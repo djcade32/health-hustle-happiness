@@ -25,15 +25,15 @@ export async function scrapeAndStoreArticles() {
   try {
     console.time("scrapeAndStoreTimer");
     const db = getFirebaseDB();
-    if (!db) return;
+    if (!db) return [];
 
     const scrapedArticles = await runScrapers();
 
-    if (!scrapedArticles) return;
+    if (!scrapedArticles) return [];
 
     let Articles = scrapedArticles;
 
-    let storedArticles = 0;
+    let storedArticles: Article[] = [];
     const querySnapshot = await getDocs(collection(db, "articles"));
     const scrapeSessionIdSnapshot = (await getDocs(collection(db, "scrapeSessionID"))).docs[0];
     let scrapeSessionId = scrapeSessionIdSnapshot.data().scrapeSessionId;
@@ -43,7 +43,8 @@ export async function scrapeAndStoreArticles() {
         scrapeSessionId: scrapeSessionId,
       });
     } else {
-      return console.log("ERROR: Failed to get scrapeSessionId, Aborting scrape and store");
+      console.log("ERROR: Failed to get scrapeSessionId, Aborting scrape and store");
+      return [];
     }
 
     Articles.forEach(async (article) => {
@@ -60,13 +61,14 @@ export async function scrapeAndStoreArticles() {
       if (!foundArticle) {
         article.id = articleId;
         article.scrapeSessionId = scrapeSessionId;
+        storedArticles.push(article);
         await addDoc(collection(db, "articles"), article);
-        storedArticles++;
       }
     });
 
     revalidatePath("/");
-    console.log("INFO: Scraped and stored articles, stored articles: ", storedArticles);
+    console.log("INFO: Scraped and stored articles, stored articles: ", storedArticles.length);
+    return storedArticles;
   } catch (error: any) {
     throw new Error(`Failed to scrape and store articles: ${error.message}`);
   } finally {

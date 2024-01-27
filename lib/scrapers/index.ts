@@ -8,90 +8,90 @@ import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 
 const SCRAPERS = [
-  // {
-  //   website: "https://finance.yahoo.com/topic/personal-finance/",
-  //   scrapeFunction: scrapeYahooFinance,
-  // },
+  {
+    website: "https://finance.yahoo.com/topic/personal-finance/",
+    scrapeFunction: scrapeYahooFinance,
+  },
   {
     website: "https://www.nerdwallet.com/h/category/personal-finance?trk=nw_gn_6.0",
     scrapeFunction: scrapeNerdWallet,
   },
-  // {
-  //   website: "https://www.thepennyhoarder.com/save-money/",
-  //   scrapeFunction: scrapePennyHoarder,
-  // },
-  // {
-  //   website: "https://www.everydayhealth.com/fitness/all-articles/",
-  //   scrapeFunction: scrapeEverydayHealth,
-  // },
-  // {
-  //   website: "https://athletechnews.com/category/fitness/",
-  //   scrapeFunction: scrapeAthletechNews,
-  // },
-  // {
-  //   website: "https://www.fitandwell.com/fitness",
-  //   scrapeFunction: scrapeFitAndWell,
-  // },
-  // {
-  //   website: "https://www.healthline.com/mental-health",
-  //   scrapeFunction: scrapeHealthline,
-  // },
-  // {
-  //   website: "https://www.news-medical.net/condition/Mental-Health",
-  //   scrapeFunction: scrapeNewsMedical,
-  // },
-  // {
-  //   website: "https://www.mentalhealthfirstaid.org/news-and-updates/",
-  //   scrapeFunction: scrapeMentalHealthFirstAid,
-  // },
-  // {
-  //   website: "https://www.financialsamurai.com/",
-  //   scrapeFunction: scrapeFinancialSamurai,
-  // },
-  // {
-  //   website: "https://www.moneyunder30.com/",
-  //   scrapeFunction: scrapeMoneyUnder30,
-  // },
-  // {
-  //   website: "https://www.mrmoneymustache.com/blog/",
-  //   scrapeFunction: scrapeMrMoneyMustache,
-  // },
-  // {
-  //   website: "https://moneymorning.com/",
-  //   scrapeFunction: scrapeMoneyMorning,
-  // },
-  // {
-  //   website: "https://breakingmuscle.com/fitness/",
-  //   scrapeFunction: scrapeBreakingMuscle,
-  // },
-  // {
-  //   website: "https://chuzefitness.com/blog",
-  //   scrapeFunction: scrapeChuzeFitness,
-  // },
-  // {
-  //   website: "https://www.nerdfitness.com/blog/",
-  //   scrapeFunction: scrapeNerdFitness,
-  // },
-  // {
-  //   website: "https://www.anytimefitness.com/ccc/workouts/",
-  //   scrapeFunction: scrapeAnytimeFitness,
-  // },
-  // {
-  //   website: "https://www.nami.org/Blogs/NAMI-Blog",
-  //   scrapeFunction: scrapeNami,
-  // },
-  // {
-  //   website: "https://www.bphope.com/bipolar-disorder/",
-  //   scrapeFunction: scrapeBphope,
-  // },
-  // {
-  //   website: "https://www.blurtitout.org/blog/",
-  //   scrapeFunction: scrapeBlurt,
-  // },
-  // {
-  //   website: "https://mybrainsnotbroken.com/",
-  //   scrapeFunction: scrapeMyBrainsNotBroken,
-  // },
+  {
+    website: "https://www.thepennyhoarder.com/save-money/",
+    scrapeFunction: scrapePennyHoarder,
+  },
+  {
+    website: "https://www.everydayhealth.com/fitness/all-articles/",
+    scrapeFunction: scrapeEverydayHealth,
+  },
+  {
+    website: "https://athletechnews.com/category/fitness/",
+    scrapeFunction: scrapeAthletechNews,
+  },
+  {
+    website: "https://www.fitandwell.com/fitness",
+    scrapeFunction: scrapeFitAndWell,
+  },
+  {
+    website: "https://www.healthline.com/mental-health",
+    scrapeFunction: scrapeHealthline,
+  },
+  {
+    website: "https://www.news-medical.net/condition/Mental-Health",
+    scrapeFunction: scrapeNewsMedical,
+  },
+  {
+    website: "https://www.mentalhealthfirstaid.org/news-and-updates/",
+    scrapeFunction: scrapeMentalHealthFirstAid,
+  },
+  {
+    website: "https://www.financialsamurai.com/",
+    scrapeFunction: scrapeFinancialSamurai,
+  },
+  {
+    website: "https://www.moneyunder30.com/",
+    scrapeFunction: scrapeMoneyUnder30,
+  },
+  {
+    website: "https://www.mrmoneymustache.com/blog/",
+    scrapeFunction: scrapeMrMoneyMustache,
+  },
+  {
+    website: "https://moneymorning.com/",
+    scrapeFunction: scrapeMoneyMorning,
+  },
+  {
+    website: "https://breakingmuscle.com/fitness/",
+    scrapeFunction: scrapeBreakingMuscle,
+  },
+  {
+    website: "https://chuzefitness.com/blog",
+    scrapeFunction: scrapeChuzeFitness,
+  },
+  {
+    website: "https://www.nerdfitness.com/blog/",
+    scrapeFunction: scrapeNerdFitness,
+  },
+  {
+    website: "https://www.anytimefitness.com/ccc/workouts/",
+    scrapeFunction: scrapeAnytimeFitness,
+  },
+  {
+    website: "https://www.nami.org/Blogs/NAMI-Blog",
+    scrapeFunction: scrapeNami,
+  },
+  {
+    website: "https://www.bphope.com/bipolar-disorder/",
+    scrapeFunction: scrapeBphope,
+  },
+  {
+    website: "https://www.blurtitout.org/blog/",
+    scrapeFunction: scrapeBlurt,
+  },
+  {
+    website: "https://mybrainsnotbroken.com/",
+    scrapeFunction: scrapeMyBrainsNotBroken,
+  },
 ];
 
 export async function runScrapers(): Promise<Article[]> {

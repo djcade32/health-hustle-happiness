@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["firebase-admin", "puppeteer-core", "puppeteer-cluster"],
   },
+  compiler: {
+    styledComponents: true,
+  },
   images: {
     remotePatterns: [
       {

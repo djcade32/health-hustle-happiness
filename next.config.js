@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ["firebase-admin", "puppeteer-core"],
+    serverComponentsExternalPackages: ["firebase-admin", "puppeteer-core", "puppeteer-cluster"],
   },
   images: {
     remotePatterns: [

@@ -14,6 +14,7 @@ import {
   LinkedinShareButton,
   RedditShareButton,
 } from "react-share";
+import { IoClose } from "react-icons/io5";
 
 interface Props {
   article: Article | null;

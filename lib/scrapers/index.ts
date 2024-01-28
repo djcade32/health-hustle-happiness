@@ -1,11 +1,11 @@
 "use server";
 
 import { Article } from "@/types";
-import { set } from "firebase/database";
 import { Page } from "puppeteer";
 import { Cluster } from "puppeteer-cluster";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
+import chromium from "@sparticuz/chromium";
 
 const SCRAPERS = [
   {
@@ -96,13 +96,29 @@ const SCRAPERS = [
 
 export async function runScrapers(): Promise<Article[]> {
   console.log("INFO: Starting to scrape all websites");
-  const cluster = await Cluster.launch({
-    concurrency: Cluster.CONCURRENCY_CONTEXT,
-    maxConcurrency: 4,
-    puppeteerOptions: {
-      headless: "new",
-    },
-  });
+  let cluster: any;
+  if (process.env.NODE_ENV === "development") {
+    console.log("INFO: Running in development mode");
+    cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_CONTEXT,
+      maxConcurrency: 4,
+      puppeteerOptions: {
+        headless: "new",
+      },
+    });
+  } else {
+    console.log("INFO: Running in production mode");
+    cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_CONTEXT,
+      maxConcurrency: 4,
+      puppeteerOptions: {
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      },
+    });
+  }
 
   const allArticles: Article[] = [];
   const scrapersToRetry: { website: string; scrapeFunction: TaskFunction<any, any> }[] = [];
@@ -122,7 +138,7 @@ export async function runScrapers(): Promise<Article[]> {
           `INFO: Finished scraping ${scraper.website}, retrieved: `,
           scrapedWebsiteArticles.length
         );
-        console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
+        // console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
       } catch (error: any) {
         console.log(`Error scraping ${scraper.website}: ${error.message}`);
         if (error.message.includes("timeout")) {

@@ -14,7 +14,8 @@ const Navbar = () => {
   const { user, setIsSidebarOpen } = useAppContext();
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const feedContainer = document.getElementById("content");
+    feedContainer?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

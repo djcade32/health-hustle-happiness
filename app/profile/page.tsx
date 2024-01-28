@@ -19,8 +19,7 @@ import DeleteAccountModal from "@/components/DeleteAccountModal";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
-import { link } from "fs";
-
+// TODO: Make page mobile friendly
 const PROVIDER_LIST = [
   { name: "Google", icon: <FcGoogle size={25} /> },
   { name: "Facebook", icon: <FaFacebookF size={25} color="#3C5998" /> },

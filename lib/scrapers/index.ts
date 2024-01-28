@@ -6,6 +6,7 @@ import { Cluster } from "puppeteer-cluster";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer-core";
 
 const SCRAPERS = [
   {
@@ -111,6 +112,7 @@ export async function runScrapers(): Promise<Article[]> {
     cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
       maxConcurrency: 4,
+      puppeteer: puppeteer,
       puppeteerOptions: {
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,

@@ -122,10 +122,21 @@ export async function runScrapers(): Promise<Article[]> {
   //     },
   //   });
   // }
+  let browser;
+  if (process.env.NODE_ENV === "development") {
+    browser = await puppeteer.launch({
+      headless: "new",
+    });
+  } else {
+    console.log("INFO: Running in production mode");
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+  }
 
-  const browser = await puppeteer.launch({
-    headless: "new",
-  });
   const page = await browser.newPage();
   // console.log("INFO: Cluster created: ", cluster);
 

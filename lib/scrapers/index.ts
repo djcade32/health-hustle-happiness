@@ -121,6 +121,7 @@ export async function runScrapers(): Promise<Article[]> {
       },
     });
   }
+  console.log("INFO: Cluster created: ", cluster);
 
   const allArticles: Article[] = [];
   const scrapersToRetry: { website: string; scrapeFunction: TaskFunction<any, any> }[] = [];

@@ -1,12 +1,13 @@
 "use server";
 
 import { Article } from "@/types";
-import { Page } from "puppeteer";
+// import { Page } from "puppeteer";
 import { Cluster } from "puppeteer-cluster";
 import { TaskFunction } from "puppeteer-cluster/dist/Cluster";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+// import  puppeteer  from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 const SCRAPERS = [
   {
@@ -98,61 +99,86 @@ const SCRAPERS = [
 export async function runScrapers(): Promise<Article[]> {
   console.log("INFO: Starting to scrape all websites");
   let cluster: any;
-  if (process.env.NODE_ENV === "development") {
-    console.log("INFO: Running in development mode");
-    cluster = await Cluster.launch({
-      concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 4,
-      puppeteerOptions: {
-        headless: "new",
-      },
-    });
-  } else {
-    console.log("INFO: Running in production mode");
-    cluster = await Cluster.launch({
-      concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 4,
-      puppeteer: puppeteer,
-      puppeteerOptions: {
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-      },
-    });
-  }
-  console.log("INFO: Cluster created: ", cluster);
+  // if (process.env.NODE_ENV === "development") {
+  //   console.log("INFO: Running in development mode");
+  //   cluster = await Cluster.launch({
+  //     concurrency: Cluster.CONCURRENCY_CONTEXT,
+  //     maxConcurrency: 4,
+  //     puppeteerOptions: {
+  //       headless: "new",
+  //     },
+  //   });
+  // } else {
+  //   console.log("INFO: Running in production mode");
+  //   cluster = await Cluster.launch({
+  //     concurrency: Cluster.CONCURRENCY_CONTEXT,
+  //     maxConcurrency: 4,
+  //     puppeteer: puppeteer,
+  //     puppeteerOptions: {
+  //       args: chromium.args,
+  //       defaultViewport: chromium.defaultViewport,
+  //       executablePath: await chromium.executablePath(),
+  //       headless: chromium.headless,
+  //     },
+  //   });
+  // }
 
-  const allArticles: Article[] = [];
+  const browser = await puppeteer.launch({
+    headless: "new",
+  });
+  const page = await browser.newPage();
+  // console.log("INFO: Cluster created: ", cluster);
+
+  let allArticles: Article[] = [];
   const scrapersToRetry: { website: string; scrapeFunction: TaskFunction<any, any> }[] = [];
 
   // Run all scrapers
-  const scrapersPromise: Promise<void> = new Promise((resolve) => {
-    SCRAPERS.forEach(async (scraper) => {
-      try {
-        console.log(`INFO: Starting to scrape ${scraper.website}`);
-        const scrapedWebsiteArticles = await cluster.execute(
-          scraper.website,
-          scraper.scrapeFunction
-        );
-        if (!scrapedWebsiteArticles) return;
-        allArticles.push(...scrapedWebsiteArticles);
-        console.log(
-          `INFO: Finished scraping ${scraper.website}, retrieved: `,
-          scrapedWebsiteArticles.length
-        );
-        // console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
-      } catch (error: any) {
-        console.log(`Error scraping ${scraper.website}: ${error.message}`);
-        if (error.message.includes("timeout")) {
-          scrapersToRetry.push(scraper);
-          console.log("INFO: Added scraper to retry: ", scraper);
-        }
-      }
-    });
-    resolve();
+  // const scrapersPromise: Promise<void> = new Promise((resolve) => {
+  //   SCRAPERS.forEach(async (scraper) => {
+  //     try {
+  //       console.log(`INFO: Starting to scrape ${scraper.website}`);
+  //       const scrapedWebsiteArticles = await scraper.scrapeFunction({
+  //         page,
+  //         data: scraper.website,
+  //       });
+
+  //       // const scrapedWebsiteArticles = await cluster.execute(
+  //       //   scraper.website,
+  //       //   scraper.scrapeFunction
+  //       // );
+  //       if (!scrapedWebsiteArticles) return;
+  //       allArticles.push(...scrapedWebsiteArticles);
+  //       console.log(
+  //         `INFO: Finished scraping ${scraper.website}, retrieved: `,
+  //         scrapedWebsiteArticles.length
+  //       );
+  //       // console.log("INFO: Scraped articles: ", scrapedWebsiteArticles);
+  //     } catch (error: any) {
+  //       console.log(`Error scraping ${scraper.website}: ${error.message}`);
+  //       if (error.message.includes("timeout")) {
+  //         scrapersToRetry.push(scraper);
+  //         console.log("INFO: Added scraper to retry: ", scraper);
+  //       }
+  //     }
+  //   });
+  //   resolve();
+  // });
+  // await scrapersPromise;
+  allArticles = await scrapeYahooFinance({
+    page,
+    data: "https://finance.yahoo.com/topic/personal-finance/",
   });
-  await scrapersPromise;
+  // const scrapersPromise: Promise<void> = new Promise((resolve) => {
+  //   SCRAPERS.forEach(async (scraper) => {
+  //     const page = await browser.newPage();
+  //     console.log(`INFO: Starting to scrape ${scraper.website}`);
+  //     scraper.scrapeFunction({ page, data: scraper.website }).then((res: Article[]) => {
+  //       test.push(...res);
+  //     });
+  //   });
+  //   resolve();
+  // });
+  // await scrapersPromise;
   console.log("INFO: Scrapers to retry: ", scrapersToRetry);
 
   // Retry scrapers that timed out
@@ -176,14 +202,15 @@ export async function runScrapers(): Promise<Article[]> {
     });
   }
 
-  await cluster.idle();
-  await cluster.close();
+  // await cluster.idle();
+  // await cluster.close();
+  await browser.close();
   console.log("INFO: Finished scraping all websites, retrieved: ", allArticles.length);
   return allArticles;
 }
 
 type Props = {
-  page: Page;
+  page: any;
   data: string;
 };
 //Personal Finance Scrapers

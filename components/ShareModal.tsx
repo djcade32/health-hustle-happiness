@@ -48,6 +48,7 @@ const ShareModal = ({ article, isOpen, setIsOpen }: Props) => {
       footer={null}
       className="bg-primary rounded-xl text-white border-gray border-[1px]"
       styles={{ mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" } }}
+      closeIcon={<IoClose color="#96A7BF" size={25} />}
     >
       <div className="flex gap-5 mt-5 justify-center">
         {contextHolder}

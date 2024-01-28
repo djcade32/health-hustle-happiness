@@ -3,6 +3,7 @@
 import { useAppContext } from "@/context/AppContext";
 import { Modal } from "antd";
 import React from "react";
+import { IoClose } from "react-icons/io5";
 
 const AboutUsModal = () => {
   const { showAboutUsModal, setShowAboutUsModal } = useAppContext();
@@ -21,6 +22,7 @@ const AboutUsModal = () => {
       footer={null}
       className="bg-primary rounded-xl text-white border-gray border-[1px]"
       styles={{ mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" } }}
+      closeIcon={<IoClose color="#96A7BF" size={25} />}
     >
       <div id="about_us" className="h-[300px] overflow-auto custom-scrollbar">
         <p className="text-center leading-7">

@@ -8,6 +8,7 @@ import LoginForms from "./LoginForms";
 import SignupForms from "./SignupForms";
 import { useAppContext } from "@/context/AppContext";
 import ForgotPasswordForms from "./ForgotPasswordForms";
+import { IoClose } from "react-icons/io5";
 
 const OnboardingModal = () => {
   const {
@@ -152,6 +153,7 @@ const OnboardingModal = () => {
       maskClosable={false}
       className="bg-primary rounded-xl text-white border-gray border-[1px]"
       styles={{ mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" } }}
+      closeIcon={<IoClose color="#96A7BF" size={25} />}
     >
       {showVerifyEmailMessage ? (
         <div className="text-center py-2 text-white">

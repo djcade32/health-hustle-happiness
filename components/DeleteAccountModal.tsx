@@ -2,6 +2,7 @@ import { useAppContext } from "@/context/AppContext";
 import { Button, Form, Input, Modal } from "antd";
 import { message } from "antd";
 import React, { useState } from "react";
+import { IoClose } from "react-icons/io5";
 import { MdLockOutline } from "react-icons/md";
 
 interface Props {
@@ -59,6 +60,7 @@ const DeleteAccountModal = ({ show, setShow }: Props) => {
       footer={null}
       className="bg-primary rounded-xl text-white border-gray border-[1px]"
       styles={{ mask: { backgroundColor: "rgb(211, 227, 253, 0.4)" } }}
+      closeIcon={<IoClose color="#96A7BF" size={25} />}
     >
       {contextHolder}
       <p>Enter password to proceed with account deletion.</p>

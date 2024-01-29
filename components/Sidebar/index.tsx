@@ -87,54 +87,64 @@ const Sidebar = () => {
             <div>
               <ul className="flex flex-col ">
                 {categories.map(({ name, icon }) => (
-                  <SidebarTab
-                    key={name}
-                    title={name}
-                    icon={icon}
-                    onClick={() => {
-                      setSelectedTab(name);
-                    }}
-                  />
+                  <Link href={"/"} key={name}>
+                    <SidebarTab
+                      key={name}
+                      title={name}
+                      icon={icon}
+                      onClick={() => {
+                        setSelectedTab(name);
+                      }}
+                    />
+                  </Link>
                 ))}
               </ul>
 
               <ul className="flex flex-col ">
-                <SidebarTab
-                  key={"popular"}
-                  title="Popular"
-                  icon={<AiOutlineFire {...iconProps} />}
-                  onClick={() => {
-                    setSelectedTab("Popular");
-                  }}
-                />
-                <SidebarTab
-                  key={"most_liked"}
-                  title="Most Liked"
-                  icon={<IoHeartOutline {...iconProps} />}
-                  onClick={() => {
-                    setSelectedTab("Most Liked");
-                  }}
-                />
+                <Link href={"/"}>
+                  <SidebarTab
+                    key={"popular"}
+                    title="Popular"
+                    icon={<AiOutlineFire {...iconProps} />}
+                    onClick={() => {
+                      setSelectedTab("Popular");
+                    }}
+                  />
+                </Link>
+                <Link href={"/"}>
+                  <SidebarTab
+                    key={"most_liked"}
+                    title="Most Liked"
+                    icon={<IoHeartOutline {...iconProps} />}
+                    onClick={() => {
+                      setSelectedTab("Most Liked");
+                    }}
+                  />
+                </Link>
               </ul>
               {user && (
                 <>
                   <ul className="flex flex-col ">
-                    <SidebarTab
-                      key={"bookmarks"}
-                      title="Bookmarks"
-                      icon={<PiBookmarkSimple {...iconProps} />}
-                      onClick={() => {
-                        setSelectedTab("Bookmarks");
-                      }}
-                    />
-                    <SidebarTab
-                      key={"recently_viewed"}
-                      title="Recently Viewed"
-                      icon={<IoEyeOutline {...iconProps} />}
-                      onClick={() => {
-                        setSelectedTab("Recently Viewed");
-                      }}
-                    />
+                    <Link href={"/"}>
+                      <SidebarTab
+                        key={"bookmarks"}
+                        title="Bookmarks"
+                        icon={<PiBookmarkSimple {...iconProps} />}
+                        onClick={() => {
+                          setSelectedTab("Bookmarks");
+                        }}
+                      />
+                    </Link>
+                    <Link href={"/"}>
+                      <SidebarTab
+                        key={"recently_viewed"}
+                        title="Recently Viewed"
+                        icon={<IoEyeOutline {...iconProps} />}
+                        onClick={() => {
+                          setSelectedTab("Recently Viewed");
+                        }}
+                      />
+                    </Link>
                   </ul>
                 </>
               )}

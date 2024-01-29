@@ -69,7 +69,7 @@ const ShareModal = ({ article, isOpen, setIsOpen }: Props) => {
           >
             <TwitterShareButton
               url={article?.link!}
-              title={`${article?.title} \n via @hustle_health_happiness \n ${article?.link}`}
+              title={`${article?.title} \n via @ThriveWithHHH \n ${article?.link}`}
             >
               <FaXTwitter {...iconProps} />
             </TwitterShareButton>
@@ -83,7 +83,7 @@ const ShareModal = ({ article, isOpen, setIsOpen }: Props) => {
           >
             <FacebookShareButton
               url={article?.link!}
-              title={`${article?.title} \n via @hustle_health_happiness \n ${article?.link}`}
+              title={`${article?.title} \n via @ThriveWithHHH \n ${article?.link}`}
             >
               <SlSocialFacebook {...iconProps} />
             </FacebookShareButton>

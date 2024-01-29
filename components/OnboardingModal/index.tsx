@@ -191,13 +191,13 @@ const OnboardingModal = () => {
                 <FcGoogle size={25} className="mr-2" />
                 <p>Google</p>
               </div>
-              <div
+              {/* <div
                 onClick={handleFacebookButtonClick}
                 className="border-[1px] border-gray transition-all duration-300 bg-white hover:opacity-75 hover:border-white text-primary flex justify-center items-center h-[40px] rounded-lg font-medium hover:cursor-pointer mb-2"
               >
                 <FaFacebookF size={25} color="#3C5998" className="mr-2" />
                 <p>Facebook</p>
-              </div>
+              </div> */}
 
               <div className="w-full flex justify-center items-center gap-2 mb-2">
                 <div className="bg-gray w-full h-[1px]" />

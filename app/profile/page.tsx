@@ -23,7 +23,7 @@ import { PiCaretLeft } from "react-icons/pi";
 
 const PROVIDER_LIST = [
   { name: "Google", icon: <FcGoogle size={25} /> },
-  { name: "Facebook", icon: <FaFacebookF size={25} color="#3C5998" /> },
+  // { name: "Facebook", icon: <FaFacebookF size={25} color="#3C5998" /> },
 ];
 
 const Page = () => {

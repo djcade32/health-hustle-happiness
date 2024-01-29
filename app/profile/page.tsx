@@ -234,7 +234,7 @@ const Page = () => {
       <div className="flex flex-col border-r-[.5px] border-l-[.5px] w-[70%] max-[1025px]:w-[100%] border-gray relative">
         {contextHolder}
         <div className=" border-b-[.5px] border-gray p-2 flex items-center gap-2 ">
-          <div className="hover:cursor-pointer hover:bg-primary-light p-1 rounded-lg transition-colors duration-300">
+          <div className="hover:cursor-pointer hover:bg-primary-light p-1 rounded-lg transition-colors duration-300 min-[768px]:hidden">
             <PiCaretLeft size={25} onClick={() => setIsSidebarOpen(true)} />
           </div>
           <p className="header-text ">Profile</p>

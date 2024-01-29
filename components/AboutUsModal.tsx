@@ -4,6 +4,9 @@ import { useAppContext } from "@/context/AppContext";
 import { Modal } from "antd";
 import React from "react";
 import { IoClose } from "react-icons/io5";
+import { BsInstagram } from "react-icons/bs";
+import Link from "next/link";
+import { RiTiktokLine } from "react-icons/ri";
 
 const AboutUsModal = () => {
   const { showAboutUsModal, setShowAboutUsModal } = useAppContext();
@@ -42,6 +45,22 @@ const AboutUsModal = () => {
           your life. Your well-being is our priority, and we invite you to embark on this harmonious
           adventure with us.
         </p>
+      </div>
+      <div className="flex justify-center w-full mt-4 gap-2">
+        <Link
+          href={"https://www.instagram.com/health.hustle.happiness/"}
+          target="_blank"
+          className="text-white"
+        >
+          <BsInstagram size={25} />
+        </Link>
+        <Link
+          href={"https://www.tiktok.com/@health.hustle.happiness?lang=en"}
+          target="_blank"
+          className="text-white"
+        >
+          <RiTiktokLine size={25} />
+        </Link>
       </div>
     </Modal>
   );

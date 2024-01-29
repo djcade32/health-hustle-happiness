@@ -2,8 +2,8 @@
 
 import SidebarTab from "@/components/Sidebar/SidebarTab";
 import { useAppContext } from "@/context/AppContext";
-import { Button, Form, Input } from "antd";
-import React, { use, useEffect, useMemo, useState } from "react";
+import { Button, Drawer, Form, Input } from "antd";
+import React, { useMemo, useState } from "react";
 import { AiOutlineProfile } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa6";
 import { MdLockOutline, MdLogout, MdOutlineEmail } from "react-icons/md";
@@ -19,7 +19,8 @@ import DeleteAccountModal from "@/components/DeleteAccountModal";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
-// TODO: Make page mobile friendly
+import { PiCaretLeft } from "react-icons/pi";
+
 const PROVIDER_LIST = [
   { name: "Google", icon: <FcGoogle size={25} /> },
   { name: "Facebook", icon: <FaFacebookF size={25} color="#3C5998" /> },
@@ -47,6 +48,7 @@ const Page = () => {
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [usedMethodsOfAuthentication, setUsedMethodsOfAuthentication] = useState<any[]>([]);
   const [showChangePasswordSection, setShowChangePasswordSection] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useMemo(() => {
     if (!user || !auth) return;
@@ -229,14 +231,46 @@ const Page = () => {
 
   return (
     <ProtectedRoute>
-      <div className="flex flex-col border-r-[.5px] border-l-[.5px] w-[70%] border-gray">
+      <div className="flex flex-col border-r-[.5px] border-l-[.5px] w-[70%] max-[1025px]:w-[100%] border-gray relative">
         {contextHolder}
-        <div className=" border-b-[.5px] border-gray p-2">
+        <div className=" border-b-[.5px] border-gray p-2 flex items-center gap-2 ">
+          <div className="hover:cursor-pointer hover:bg-primary-light p-1 rounded-lg transition-colors duration-300">
+            <PiCaretLeft size={25} onClick={() => setIsSidebarOpen(true)} />
+          </div>
           <p className="header-text ">Profile</p>
         </div>
-        <div className="flex h-full">
+        <div className="flex h-full ">
+          <Drawer
+            closable={false}
+            onClose={() => setIsSidebarOpen(false)}
+            open={isSidebarOpen}
+            placement="left"
+            key={"left"}
+            width={250}
+            styles={{
+              body: { backgroundColor: "#021525", borderRight: ".5px solid #96A7BF", padding: 0 },
+            }}
+            getContainer={false}
+          >
+            <div>
+              <SidebarTab
+                icon={<AiOutlineProfile size={20} />}
+                onClick={() => setActiveTab("Account")}
+                title="Account"
+                suffixIcon={<IoIosArrowForward size={20} />}
+                isSelected={activeTab === "Account"}
+              />
+              <SidebarTab
+                key={"sign_out"}
+                title="Sign out"
+                icon={<MdLogout size={20} />}
+                onClick={handleSignOut}
+                showSelected={false}
+              />
+            </div>
+          </Drawer>
           {/* Sidebar menu */}
-          <div className="w-[40%] border-r-[.5px] border-gray ">
+          <div className="w-[40%] border-r-[.5px] border-gray max-[768px]:hidden">
             <div>
               <SidebarTab
                 icon={<AiOutlineProfile size={20} />}

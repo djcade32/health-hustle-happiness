@@ -12,14 +12,7 @@ interface Props {
   isSelected?: boolean;
 }
 
-const SidebarTab = ({
-  title,
-  icon,
-  onClick,
-  showSelected = true,
-  suffixIcon,
-  isSelected,
-}: Props) => {
+const SidebarTab = ({ title, icon, onClick, suffixIcon, isSelected }: Props) => {
   const { selectedTab } = useAppContext();
 
   const checkIsSelected = () => {

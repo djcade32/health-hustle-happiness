@@ -34,7 +34,6 @@ const Sidebar = () => {
     isSidebarOpen,
     setIsSidebarOpen,
     setShowAboutUsModal,
-    setShowProfileScreen,
   } = useAppContext();
 
   const handleFeedbackClick = () => {
@@ -164,13 +163,15 @@ const Sidebar = () => {
               </ul>
               {user && (
                 <div>
-                  <SidebarTab
-                    key={"sign_out"}
-                    title="Sign out"
-                    icon={<MdLogout {...iconProps} />}
-                    onClick={signUserOut}
-                    showSelected={false}
-                  />
+                  <Link href={"/profile"}>
+                    <SidebarTab
+                      key={"profile"}
+                      title="Profile"
+                      icon={<HiOutlineUser {...iconProps} />}
+                      onClick={() => setSelectedTab("Profile")}
+                      showSelected={false}
+                    />
+                  </Link>
                 </div>
               )}
             </div>

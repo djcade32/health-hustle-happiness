@@ -63,6 +63,7 @@ const Page = () => {
       });
     });
     setUsedMethodsOfAuthentication(usedProviderList);
+    console.log("Used methods of authentication: ", usedProviderList);
   }, [user]);
 
   const handleSignOut = () => {
@@ -511,30 +512,32 @@ const Page = () => {
                 </div>
               )}
               {/* Add another method of authentication section */}
-              <div className="mb-6">
-                <p className="subtitle-text mb-1 text-white">Add Login Account</p>
-                <p className="text-gray mb-4">
-                  Add another method of authentication to make sure you never lose access to your
-                  account.
-                </p>
-                <div className="flex flex-col gap-4">
-                  {PROVIDER_LIST.map(
-                    (provider) =>
-                      !usedMethodsOfAuthentication.includes(provider) && (
-                        <Button
-                          key={provider.name}
-                          className=" bg-white hover:opacity-75 transition-opacity duration-300 flex gap-2 w-[250px] items-center justify-center"
-                          size="large"
-                          onClick={() => handleAddingAuthenticationMethod(provider)}
-                          style={{ color: "#021525", fontWeight: 500, border: "none" }}
-                        >
-                          {provider.icon}
-                          Connect to {provider.name}
-                        </Button>
-                      )
-                  )}
+              {!usedMethodsOfAuthentication.includes(PROVIDER_LIST[0]) && (
+                <div className="mb-6">
+                  <p className="subtitle-text mb-1 text-white">Add Login Account</p>
+                  <p className="text-gray mb-4">
+                    Add another method of authentication to make sure you never lose access to your
+                    account.
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {PROVIDER_LIST.map(
+                      (provider) =>
+                        !usedMethodsOfAuthentication.includes(provider) && (
+                          <Button
+                            key={provider.name}
+                            className=" bg-white hover:opacity-75 transition-opacity duration-300 flex gap-2 w-[250px] items-center justify-center"
+                            size="large"
+                            onClick={() => handleAddingAuthenticationMethod(provider)}
+                            style={{ color: "#021525", fontWeight: 500, border: "none" }}
+                          >
+                            {provider.icon}
+                            Connect to {provider.name}
+                          </Button>
+                        )
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Remove method of authentication section */}
               {usedMethodsOfAuthentication.length > 0 && (

@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { BsInstagram } from "react-icons/bs";
 import Link from "next/link";
 import { RiTiktokLine } from "react-icons/ri";
+import { FaXTwitter } from "react-icons/fa6";
 
 const AboutUsModal = () => {
   const { showAboutUsModal, setShowAboutUsModal } = useAppContext();
@@ -53,6 +54,9 @@ const AboutUsModal = () => {
           className="text-white"
         >
           <BsInstagram size={25} />
+        </Link>
+        <Link href={"https://twitter.com/ThriveWithHHH"} target="_blank" className="text-white">
+          <FaXTwitter size={25} />
         </Link>
         <Link
           href={"https://www.tiktok.com/@health.hustle.happiness?lang=en"}

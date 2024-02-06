@@ -189,6 +189,7 @@ type Props = {
 //Personal Finance Scrapers
 async function scrapeYahooFinance({ page, data: url }: Props): Promise<Article[]> {
   await page.goto(url, { waitUntil: "load" });
+  const lastPosition = await scrollPageToBottom(page, {});
 
   const scrapedResults = await page.evaluate(() => {
     let scrapedArticles: Article[] = [];

@@ -9,6 +9,7 @@ import {
   QueryOrderByConstraint,
   addDoc,
   collection,
+  deleteDoc,
   getDocs,
   limit,
   orderBy,
@@ -196,17 +197,14 @@ export async function updateArticles() {
     if (!db) return;
     const querySnapshot = await getDocs(collection(db, "articles"));
     querySnapshot.forEach(async (doc) => {
-      await updateDoc(doc.ref, {
-        ...doc.data(),
-        recentlyViewedUsers: [],
-      });
-      // if (doc.data().type === "Personal Finance") {
-      //   await updateDoc(doc.ref, {
-      //     ...doc.data(),
-      //     type: type,
-      //   });
-      //   return;
-      // }
+      // await updateDoc(doc.ref, {
+      //   ...doc.data(),
+      //   recentlyViewedUsers: [],
+      // });
+      if (doc.data().scrapeSessionId === 4 && doc.data().websiteName === "Yahoo") {
+        await deleteDoc(doc.ref);
+        return;
+      }
     });
     console.log("INFO: Updated article");
   } catch (error: any) {
